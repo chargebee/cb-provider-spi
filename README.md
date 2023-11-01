@@ -1,1 +1,2 @@
-# Chargebee's Service Provider Interfances for capabilities
+## Chargebee's Open API Spec
+Service Provider Interfaces for Chargebee's capabilities
