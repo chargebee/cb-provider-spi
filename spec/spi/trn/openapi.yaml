@@ -65,7 +65,7 @@ paths:
     $ref: '../common/paths/health.yml'
   /credentials/validate:
     $ref: '../common/paths/credentials.yml'
-  /trns/validate:
+  /trn/validate:
     post:
       tags:
         - TrnValidate
@@ -106,7 +106,7 @@ paths:
           $ref: '../common/schemas/errors.yml#/components/responses/Error500'
         '503':
           $ref: '../common/schemas/errors.yml#/components/responses/Error503'
-  /trns/validate/{requestId}:
+  /trn/validate/{requestId}:
     get:
       tags:
         - TrnValidate
@@ -137,7 +137,7 @@ paths:
           $ref: '../common/schemas/errors.yml#/components/responses/Error500'
         '503':
           $ref: '../common/schemas/errors.yml#/components/responses/Error503'
-  /trns/validate/batch:
+  /trn/validate/batch:
     post:
       tags:
         - TrnValidate
@@ -176,7 +176,7 @@ paths:
           $ref: '../common/schemas/errors.yml#/components/responses/Error500'
         '503':
           $ref: '../common/schemas/errors.yml#/components/responses/Error503'
-  /trns/validate/batch/{batchId}:
+  /trn/validate/batch/{batchId}:
     get:
       tags:
         - TrnValidate
