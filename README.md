@@ -1,7 +1,7 @@
 ## Chargebee's Open API Spec
 Service Provider Interfaces for Chargebee's capabilities
-- [Open api tax_spec](spec/tax-provider.yaml)
-- [Open api trn_validation_spec](spec/trn-provider.yaml)
+- [Open api tax_spec](spec/spi/tax/openapi.yaml)
+- [Open api trn_validation_spec](spec/spi/trn/openapi.yaml)
 - To view open api spec visit https://editor.swagger.io/ and place generated yaml content
 
 ## Add new open api spec
@@ -10,6 +10,7 @@ Service Provider Interfaces for Chargebee's capabilities
 - Command to validate open api spec `sh gradlew validateSpec_abc --warning-mode all --stacktrace`
 - Command to generate open api spec `sh gradlew generateSpec_abc --warning-mode all --stacktrace`
 - Java models, clients and doc will be generated under `generated/abc` folder
+- 
 
 ## Commands
 - Validate the open api spec `sh gradlew validateSpec --warning-mode all --stacktrace`
@@ -22,43 +23,36 @@ Service Provider Interfaces for Chargebee's capabilities
 
 Follow the below steps for generating jar
 
-1. Clone repository in local
-
+Clone repository in local
 ```shell
-git clone git@github.com:chargebee/cb-provider-spi.git
+  git clone git@github.com:chargebee/cb-provider-spi.git
 ```
 
-2. Validate open api specs using below command
-
+Validate open api specs using below command
 ```shell
 sh gradlew validateSpec  --warning-mode all --stacktrace
 ```
 
-3. Validate specific open api spec using below command
-
+Validate specific open api spec using below command
 ```shell
  sh gradlew validateSpec_tax  --warning-mode all --stacktrace
 ```
 
-4. Generate models of all open api specs using below command
-
+Generate models of all open api specs using below command
 ```shell
 sh gradlew generateSpec  --warning-mode all --stacktrace
 ```
 
-5. Generate models specific open api spec using below command
-
+Generate models specific open api spec using below command
 ```shell
 sh gradlew generateSpec_tax  --warning-mode all --stacktrace
 ```
 
-6. When models are generated successfully, generate jar using below command
-
+When models are generated successfully, generate jar using below command
 ```shell
 sh gradlew clean build
 ```
-
-7. If no build issue, and if jar is successfully created, go to cb-provider-apis/build/libs/cb-provider-spi.jar
+If no build issue, and if jar is successfully created, go to **./build/libs/cb-provider-spi.jar**
 
 
 ## Getting Started
