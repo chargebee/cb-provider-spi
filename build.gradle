@@ -74,6 +74,16 @@ def openApiTask() {
 
 openApiTask();
 
+tasks.openApiGenerate.configure {
+    actions.clear()
+    dependsOn(generateSpec)
+}
+
+tasks.openApiValidate.configure {
+    actions.clear()
+    dependsOn(validateSpec)
+}
+
 publishing {
     repositories {
         maven {
