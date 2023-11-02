@@ -184,9 +184,9 @@ paths:
       description: "This endpoint takes the batch id and returns the response of batch of tax registration numbers."
       operationId: fetchTrnValidationBatch
       parameters:
-        - $ref: '#/components/parameters/BatchIdPathParam'
-        - $ref: '#/components/parameters/OffsetQueryParam'
-        - $ref: '#/components/parameters/LimitQueryParam'
+        - $ref: '../common/schemas/batch.yml#/components/parameters/BatchIdPathParam'
+        - $ref: '../common/schemas/batch.yml#/components/parameters/OffsetQueryParam'
+        - $ref: '../common/schemas/batch.yml#/components/parameters/LimitQueryParam'
       responses:
         '200':
           description: "Response of the batch of tax registration numbers validation."
@@ -216,7 +216,7 @@ paths:
       description: "This endpoint takes the batch id and delete the running batch of tax registration numbers validation request at server side."
       operationId: deleteTrnValidationBatch
       parameters:
-        - $ref: '#/components/parameters/BatchIdPathParam'
+        - $ref: '../common/schemas/batch.yml#/components/parameters/BatchIdPathParam'
       responses:
         '200':
           description: "Successfully deleted the request of batch of tax registration numbers validation."
@@ -271,21 +271,18 @@ components:
           description: Code of the tax office, some country need it to validate tax registration number
         externalId:
           type: string
-          description: Way to relate the request and response, if passed then should be the same value returned in response
+          description: Way to relate the request and response, if passed then the same value should be returned in response
     TrnValidationResponse:
       type: object
       description: Contains the required properties for tax registration number validation response
       required:
         - requestId
-        - requestStatus
         - trn
         - country
       properties:
         requestId:
           type: string
           description: Unique id of the request, this is to refer later to fetch the response.
-        requestStatus:
-          $ref: '#/components/schemas/RequestStatus'
         trn:
           type: string
           description: Tax registration number
@@ -312,63 +309,36 @@ components:
           description: Indicates name of the source of tax registration number validation (like database, vies)
         externalId:
           type: string
-          description: Way to relate the request and response, should be the same value passed during request
+          description: The externalId passed in the request
         message:
           type: string
           description: Any message about tax registration number validation request
-        matchScores:
-          type: array
-          items:
-            $ref: '#/components/schemas/MatchScore'
     TrnValidationBatchRequest:
-      type: object
-      description: Contains required properties for batch of tax registration numbers validation request
-      required:
-        - trn
-      properties:
-        batchName:
-          type: string
-          description: Name of the batch
-        trns:
-          type: array
-          description: List of tax registration numbers
-          items:
-            $ref: '#/components/schemas/TrnValidationRequest'
-        externalId:
-          type: string
-          description: Way to relate the request and response, if passed then should be the same value returned in response
+      allOf:
+        - $ref: '../common/schemas/batch.yml#/components/schemas/BatchRequest'
+        - type: object
+          description: Contains required properties for batch of tax registration numbers validation request
+          required:
+            - trns
+          properties:
+            trns:
+              type: array
+              description: List of tax registration numbers
+              items:
+                $ref: '#/components/schemas/TrnValidationRequest'
     TrnValidationBatchResponse:
-      type: object
-      description: Contains the required properties for batch of tax registration numbers validation response
-      required:
-        - batchId
-        - requestStatus
-        - trns
-        - limit
-        - offset
-      properties:
-        batchId:
-          type: string
-          description: Id of the batch of tax registration numbers validation request
-        batchName:
-          type: string
-          description: Name of the batch of tax registration numbers
-        requestStatus:
-          $ref: '#/components/schemas/RequestStatus'
-        trns:
-          type: array
-          description: List of tax registration numbers
-          items:
-            $ref: '#/components/schemas/TrnValidationResponse'
-        limit:
-          type: integer
-          description: Use for the pagination for batch of tax registration numbers validation request, limit indicates the maximum number of TRNs returned in the response
-        offset:
-          type: integer
-          description: Use for the pagination for batch of tax registration numbers validation request, offset indicates the starting point of TRNs returned in the response
-        completionPercentage:
-          type: integer
-          description: Percentage of batch of tax registration numbers validated request
+      allOf:
+        - $ref: '../common/schemas/batch.yml#/components/schemas/BatchResponse'
+        - type: object
+          description: Contains the required properties for batch of tax registration numbers validation response
+          required:
+            - trns
+          properties:
+            trns:
+              type: array
+              description: List of tax registration numbers
+              items:
+                $ref: '#/components/schemas/TrnValidationResponse'
     TrnValidationBatchDeleteResponse:
       type: object
       description: Response of the delete of batch of tax registration numbers validation request
@@ -395,30 +365,6 @@ components:
           type: string
           description: Code of the country
           format: ISO
-    MatchScore:
-      type: object
-      description: Specify the match score of expected and actual value.
-      properties:
-        name:
-          type: string
-          description: Name of the field for matching result
-        expected:
-          type: string
-          description: Expected value
-        actual:
-          type: string
-          description: Actual value
-        score:
-          type: integer
-          description: Matching score in percentage of expected and actual value
-    RequestStatus:
-      type: string
-      description: This field indicates current status of the request at server side.
-      enum:
-        - COMPLETED
-        - FAILED
-        - RUNNING
-        - CANCELED
     TrnStatus:
       type: string
       description: Indicates status of the tax registration number.
@@ -482,29 +428,6 @@ components:
       schema:
         type: string
       description: "The unique request identifier."
-    BatchIdPathParam:
-      in: path
-      name: batchId
-      required: true
-      schema:
-        type: string
-      description: "The unique batch request identifier."
-    LimitQueryParam:
-      in: query
-      name: limit
-      required: true
-      schema:
-        type: integer
-        default: 100
-      description: "The limit number of records to be returned."
-    OffsetQueryParam:
-      in: query
-      name: offset
-      required: true
-      schema:
-        type: integer
-        default: 0
-      description: "The starting index of records to be returned."
 
   responses:
     Error400TrnValidation:
@@ -534,7 +457,6 @@ components:
       description: Response with minimal details of tax registration number validation.
       value:
         requestId: qwerty12345
-        requestStatus: COMPLETED
         trn: 40303265045
         country:
           name: France
@@ -544,7 +466,6 @@ components:
       description: Response with more details about tax registration number.
       value:
         requestId: qwerty12345
-        requestStatus: COMPLETED
         trn: 40303265045
         country:
           name: France
@@ -595,7 +516,7 @@ components:
       value:
         batchId: qwerty12345
         batchName: x-trn-batch
-        requestStatus: COMPLETED
+        status: COMPLETED
         limit: 100
         offset: 0
         completionPercentage: 100
