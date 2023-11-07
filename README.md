@@ -1,7 +1,7 @@
 ## Chargebee's Open API Spec
 Service Provider Interfaces for Chargebee's capabilities
-- [Open api tax_spec](spec/spi/tax/openapi.yaml)
-- [Open api trn_validation_spec](spec/spi/trn/openapi.yaml)
+- [Open api tax_spec](spec/spi/openapi_tax.yml)
+- [Open api trn_validation_spec](spec/spi/openapi_trn.yml)
 - To view open api spec visit https://editor.swagger.io/ and place generated yaml content
 
 ## Add new open api spec

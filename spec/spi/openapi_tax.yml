@@ -72,9 +72,9 @@ tags:
     description: "Endpoints to monitor the health of the Tax Service Provider and the Tax Service Adapter."
 paths:
   /health:
-    $ref: '../common/paths/health.yml'
+    $ref: './paths/health.yml'
   /credentials/validate:
-    $ref: '../common/paths/credentials.yml'
+    $ref: './paths/credentials.yml'
   /tax-estimate:
     post:
       tags:
@@ -115,17 +115,17 @@ paths:
         '400':
           $ref: '#/components/responses/Error400TaxEstimate'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /invoices:
     post:
       tags:
@@ -158,15 +158,15 @@ paths:
         '400':
           $ref: '#/components/responses/Error400Invoice'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /invoices/{invoiceId}:
     get:
       tags:
@@ -184,17 +184,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/Invoice'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /invoices/{invoiceId}/commit:
     post:
       tags:
@@ -208,17 +208,17 @@ paths:
         '204':
           description: "Invoice committed successfully."
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /invoices/{invoiceId}/void:
     post:
       tags:
@@ -232,17 +232,17 @@ paths:
         '204':
           description: Invoice voided successfully.
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /credit-notes:
     post:
       tags:
@@ -275,15 +275,15 @@ paths:
         '400':
           $ref: '#/components/responses/Error400CreditNote'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /credit-notes/{creditNoteId}:
     get:
       tags:
@@ -301,17 +301,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreditNote'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /credit-notes/{creditNoteId}/commit:
     post:
       tags:
@@ -325,17 +325,17 @@ paths:
         '204':
           description: Credit note committed successfully.
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /credit-notes/{creditNoteId}/void:
     post:
       tags:
@@ -349,17 +349,17 @@ paths:
         '204':
           description: "Credit note voided successfully."
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /address/validate:
     post:
       summary: "Address validation"
@@ -401,15 +401,15 @@ paths:
                     message: Empty address provided.
                     entity: Address
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /address/check-taxability:
     post:
       summary: "Check taxability"
@@ -467,15 +467,15 @@ paths:
                     message: Empty address provided.
                     entity: Address
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
 components:
   schemas:
     TaxEstimationRequest:

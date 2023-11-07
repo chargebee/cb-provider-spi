@@ -62,9 +62,9 @@ tags:
     description: "Endpoints to validate the tax registration number(s)."
 paths:
   /health:
-    $ref: '../common/paths/health.yml'
+    $ref: './paths/health.yml'
   /credentials/validate:
-    $ref: '../common/paths/credentials.yml'
+    $ref: './paths/credentials.yml'
   /trn/validate:
     post:
       tags:
@@ -97,15 +97,15 @@ paths:
         '400':
           $ref: '#/components/responses/Error400TrnValidate'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /trn/validate/{requestId}:
     get:
       tags:
@@ -126,17 +126,17 @@ paths:
                 TrnValidateResponse:
                   $ref: '#/components/examples/TrnValidateResponse'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /trn/validate/batch:
     post:
       tags:
@@ -167,15 +167,15 @@ paths:
         '400':
           $ref: '#/components/responses/Error400TrnValidate'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
   /trn/validate/batch/{batchId}:
     get:
       tags:
@@ -184,9 +184,9 @@ paths:
       description: "This endpoint takes the batch id and returns the response of batch of tax registration numbers."
       operationId: fetchTrnValidateBatch
       parameters:
-        - $ref: '../common/schemas/batch.yml#/components/parameters/BatchIdPathParam'
-        - $ref: '../common/schemas/batch.yml#/components/parameters/OffsetQueryParam'
-        - $ref: '../common/schemas/batch.yml#/components/parameters/LimitQueryParam'
+        - $ref: './schemas/batch.yml#/components/parameters/BatchIdPathParam'
+        - $ref: './schemas/batch.yml#/components/parameters/OffsetQueryParam'
+        - $ref: './schemas/batch.yml#/components/parameters/LimitQueryParam'
       responses:
         '200':
           description: "Response of the batch of tax registration numbers validation."
@@ -198,17 +198,17 @@ paths:
                 TrnValidateResponse:
                   $ref: '#/components/examples/TrnValidateBatchResponse'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
     delete:
       tags:
         - TrnValidate
@@ -216,7 +216,7 @@ paths:
       description: "This endpoint takes the batch id and delete the running batch of tax registration numbers validation request at server side."
       operationId: deleteTrnValidateBatch
       parameters:
-        - $ref: '../common/schemas/batch.yml#/components/parameters/BatchIdPathParam'
+        - $ref: './schemas/batch.yml#/components/parameters/BatchIdPathParam'
       responses:
         '200':
           description: "Successfully deleted the request of batch of tax registration numbers validation."
@@ -228,17 +228,17 @@ paths:
                 BatchTrnValidateDeleteResponse:
                   $ref: '#/components/examples/TrnValidateBatchDeleteResponse'
         '401':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error401'
+          $ref: './schemas/errors.yml#/components/responses/Error401'
         '403':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error403'
+          $ref: './schemas/errors.yml#/components/responses/Error403'
         '404':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error404'
+          $ref: './schemas/errors.yml#/components/responses/Error404'
         '429':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error429'
+          $ref: './schemas/errors.yml#/components/responses/Error429'
         '500':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error500'
+          $ref: './schemas/errors.yml#/components/responses/Error500'
         '503':
-          $ref: '../common/schemas/errors.yml#/components/responses/Error503'
+          $ref: './schemas/errors.yml#/components/responses/Error503'
 components:
   schemas:
     TrnValidateRequest:
@@ -315,7 +315,7 @@ components:
           description: Any message about tax registration number validation request
     TrnValidateBatchRequest:
       allOf:
-        - $ref: '../common/schemas/batch.yml#/components/schemas/BatchRequest'
+        - $ref: './schemas/batch.yml#/components/schemas/BatchRequest'
         - type: object
           description: Contains required properties for batch of tax registration numbers validation request
           required:
@@ -328,7 +328,7 @@ components:
                 $ref: '#/components/schemas/TrnValidateRequest'
     TrnValidateBatchResponse:
       allOf:
-        - $ref: '../common/schemas/batch.yml#/components/schemas/BatchResponse'
+        - $ref: './schemas/batch.yml#/components/schemas/BatchResponse'
         - type: object
           description: Contains the required properties for batch of tax registration numbers validation response
           required:
@@ -341,7 +341,7 @@ components:
                 $ref: '#/components/schemas/TrnValidateResponse'
     TrnValidateBatchDeleteResponse:
       allOf:
-        - $ref: '../common/schemas/batch.yml#/components/schemas/BatchDeleteResponse'
+        - $ref: './schemas/batch.yml#/components/schemas/BatchDeleteResponse'
     Country:
       type: object
       description: Defines the required properties to hold information about Country
@@ -399,7 +399,7 @@ components:
                 maxLength: 250
                 example: trn
               code:
-                $ref: '../common/schemas/errors.yml#/components/schemas/ErrorCode'
+                $ref: './schemas/errors.yml#/components/schemas/ErrorCode'
               message:
                 type: string
                 description: A short message describing the reason for the error.

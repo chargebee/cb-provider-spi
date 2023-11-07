@@ -54,7 +54,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: 'health.yml#/components/schemas/HealthCheckResponse'
+            $ref: './health.yml#/components/schemas/HealthCheckResponse'
           example:
             status: DOWN
             version: 1.0.0
