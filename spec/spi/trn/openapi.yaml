@@ -76,26 +76,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrnValidationRequest'
+              $ref: '#/components/schemas/TrnValidateRequest'
             examples:
-              TrnValidationRequest:
-                $ref: '#/components/examples/TrnValidationRequest'
-              TrnValidationRequestAdditional:
-                $ref: '#/components/examples/TrnValidationRequestAdditional'
+              TrnValidateRequest:
+                $ref: '#/components/examples/TrnValidateRequest'
+              TrnValidateRequestAdditional:
+                $ref: '#/components/examples/TrnValidateRequestAdditional'
       responses:
         '200':
           description: "Request to validate the tax registration number submitted successfully."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrnValidationResponse'
+                $ref: '#/components/schemas/TrnValidateResponse'
               examples:
-                TrnValidationResponse:
-                  $ref: '#/components/examples/TrnValidationResponse'
-                TrnValidationResponseAdditional:
-                  $ref: '#/components/examples/TrnValidationResponseAdditional'
+                TrnValidateResponse:
+                  $ref: '#/components/examples/TrnValidateResponse'
+                TrnValidateResponseAdditional:
+                  $ref: '#/components/examples/TrnValidateResponseAdditional'
         '400':
-          $ref: '#/components/responses/Error400TrnValidation'
+          $ref: '#/components/responses/Error400TrnValidate'
         '401':
           $ref: '../common/schemas/errors.yml#/components/responses/Error401'
         '403':
@@ -121,10 +121,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrnValidationResponse'
+                $ref: '#/components/schemas/TrnValidateResponse'
               examples:
-                TrnValidationResponse:
-                  $ref: '#/components/examples/TrnValidationResponse'
+                TrnValidateResponse:
+                  $ref: '#/components/examples/TrnValidateResponse'
         '401':
           $ref: '../common/schemas/errors.yml#/components/responses/Error401'
         '403':
@@ -148,24 +148,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrnValidationBatchRequest'
+              $ref: '#/components/schemas/TrnValidateBatchRequest'
             examples:
-              TrnValidationBatchRequest:
-                $ref: '#/components/examples/TrnValidationBatchRequest'
-              TrnValidationBatchRequestAdditional:
-                $ref: '#/components/examples/TrnValidationBatchRequestAdditional'
+              TrnValidateBatchRequest:
+                $ref: '#/components/examples/TrnValidateBatchRequest'
+              TrnValidateBatchRequestAdditional:
+                $ref: '#/components/examples/TrnValidateBatchRequestAdditional'
       responses:
         '200':
           description: "Request to validate the batch of tax registration numbers being processed."
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrnValidationBatchResponse'
+                $ref: '#/components/schemas/TrnValidateBatchResponse'
               examples:
-                TrnValidationBatchResponse:
-                  $ref: '#/components/examples/TrnValidationBatchResponse'
+                TrnValidateBatchResponse:
+                  $ref: '#/components/examples/TrnValidateBatchResponse'
         '400':
-          $ref: '#/components/responses/Error400TrnValidation'
+          $ref: '#/components/responses/Error400TrnValidate'
         '401':
           $ref: '../common/schemas/errors.yml#/components/responses/Error401'
         '403':
@@ -182,7 +182,7 @@ paths:
         - TrnValidate
       summary: Get the response of batch of tax registration numbers
       description: "This endpoint takes the batch id and returns the response of batch of tax registration numbers."
-      operationId: fetchTrnValidationBatch
+      operationId: fetchTrnValidateBatch
       parameters:
         - $ref: '../common/schemas/batch.yml#/components/parameters/BatchIdPathParam'
         - $ref: '../common/schemas/batch.yml#/components/parameters/OffsetQueryParam'
@@ -193,10 +193,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrnValidationBatchResponse'
+                $ref: '#/components/schemas/TrnValidateBatchResponse'
               examples:
-                TrnValidationResponse:
-                  $ref: '#/components/examples/TrnValidationBatchResponse'
+                TrnValidateResponse:
+                  $ref: '#/components/examples/TrnValidateBatchResponse'
         '401':
           $ref: '../common/schemas/errors.yml#/components/responses/Error401'
         '403':
@@ -214,7 +214,7 @@ paths:
         - TrnValidate
       summary: Delete the request of batch of tax registration numbers validation
       description: "This endpoint takes the batch id and delete the running batch of tax registration numbers validation request at server side."
-      operationId: deleteTrnValidationBatch
+      operationId: deleteTrnValidateBatch
       parameters:
         - $ref: '../common/schemas/batch.yml#/components/parameters/BatchIdPathParam'
       responses:
@@ -223,10 +223,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrnValidationBatchDeleteResponse'
+                $ref: '#/components/schemas/TrnValidateBatchDeleteResponse'
               examples:
-                BatchTrnValidationDeleteResponse:
-                  $ref: '#/components/examples/TrnValidationBatchDeleteResponse'
+                BatchTrnValidateDeleteResponse:
+                  $ref: '#/components/examples/TrnValidateBatchDeleteResponse'
         '401':
           $ref: '../common/schemas/errors.yml#/components/responses/Error401'
         '403':
@@ -241,7 +241,7 @@ paths:
           $ref: '../common/schemas/errors.yml#/components/responses/Error503'
 components:
   schemas:
-    TrnValidationRequest:
+    TrnValidateRequest:
       type: object
       additionalProperties: false
       description: Contains the required properties for tax registration number validation request
@@ -272,7 +272,7 @@ components:
         externalId:
           type: string
           description: Way to relate the request and response, if passed then the same value should be returned in response
-    TrnValidationResponse:
+    TrnValidateResponse:
       type: object
       description: Contains the required properties for tax registration number validation response
       required:
@@ -313,7 +313,7 @@ components:
         message:
           type: string
           description: Any message about tax registration number validation request
-    TrnValidationBatchRequest:
+    TrnValidateBatchRequest:
       allOf:
         - $ref: '../common/schemas/batch.yml#/components/schemas/BatchRequest'
         - type: object
@@ -325,8 +325,8 @@ components:
               type: array
               description: List of tax registration numbers
               items:
-                $ref: '#/components/schemas/TrnValidationRequest'
-    TrnValidationBatchResponse:
+                $ref: '#/components/schemas/TrnValidateRequest'
+    TrnValidateBatchResponse:
       allOf:
         - $ref: '../common/schemas/batch.yml#/components/schemas/BatchResponse'
         - type: object
@@ -338,8 +338,8 @@ components:
               type: array
               description: List of tax registration numbers
               items:
-                $ref: '#/components/schemas/TrnValidationResponse'
-    TrnValidationBatchDeleteResponse:
+                $ref: '#/components/schemas/TrnValidateResponse'
+    TrnValidateBatchDeleteResponse:
       type: object
       description: Response of the delete of batch of tax registration numbers validation request
       required:
@@ -389,7 +389,7 @@ components:
         - ACTIVE
         - INACTIVE
         - UNKNOWN
-    TrnValidationErrorResponse:
+    TrnValidateErrorResponse:
       type: object
       description: Defined the structure for validation error of tax registration number validation.
       required:
@@ -430,20 +430,20 @@ components:
       description: "The unique request identifier."
 
   responses:
-    Error400TrnValidation:
+    Error400TrnValidate:
       description: Bad request.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/TrnValidationErrorResponse'
+            $ref: '#/components/schemas/TrnValidateErrorResponse'
   examples:
-    TrnValidationRequest:
+    TrnValidateRequest:
       description: Request with minimal details required to validate the tax registration number.
       value:
         trn: 40303265045
         country:
           code: FR
-    TrnValidationRequestAdditional:
+    TrnValidateRequestAdditional:
       description: Request with more details to validate the tax registration number.
       value:
         trn: 40303265045
@@ -453,7 +453,7 @@ components:
         externalId: cb-request-id
         validOn: 10-09-2023 00:00:00
         requesterTrn: FR12345678
-    TrnValidationResponse:
+    TrnValidateResponse:
       description: Response with minimal details of tax registration number validation.
       value:
         requestId: qwerty12345
@@ -462,7 +462,7 @@ components:
           name: France
           code: FR
         trnStatus: VALID
-    TrnValidationResponseAdditional:
+    TrnValidateResponseAdditional:
       description: Response with more details about tax registration number.
       value:
         requestId: qwerty12345
@@ -476,7 +476,7 @@ components:
         isBusiness: true
         address: 12, Company Road
         externalId: cb-request-id
-    TrnValidationBatchRequest:
+    TrnValidateBatchRequest:
       description: Request with minimal details required to validate the batch of tax registration numbers.
       value:
         batchName: x-trn-batch
@@ -489,7 +489,7 @@ components:
             trn: 50303265045
             country:
               code: UK
-    TrnValidationBatchRequestAdditional:
+    TrnValidateBatchRequestAdditional:
       description: Request with more details to validate the batch of tax registration numbers.
       value:
         batchName: x-trn-batch
@@ -511,7 +511,7 @@ components:
             externalId: cb-request-id
             validOn: 10-09-2023 00:00:00
             requesterTrn: FR12345678
-    TrnValidationBatchResponse:
+    TrnValidateBatchResponse:
       description: Response with minimal details of tax registration number request.
       value:
         batchId: qwerty12345
@@ -533,7 +533,7 @@ components:
             country:
               name: The united kingdom
               code: UK
-    TrnValidationBatchDeleteResponse:
+    TrnValidateBatchDeleteResponse:
       description: Response with required details of deleting batch of tax registration numbers validation.
       value:
         batchId: qwerty12345
