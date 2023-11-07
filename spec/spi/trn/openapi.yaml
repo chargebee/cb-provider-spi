@@ -340,18 +340,8 @@ components:
               items:
                 $ref: '#/components/schemas/TrnValidateResponse'
     TrnValidateBatchDeleteResponse:
-      type: object
-      description: Response of the delete of batch of tax registration numbers validation request
-      required:
-        - batchId
-        - message
-      properties:
-        batchId:
-          type: string
-          description: Id of the batch of tax registration numbers validation request
-        message:
-          type: string
-          description: Any message to show at client side about deleting the batch of tax registration numbers validation request
+      allOf:
+        - $ref: '../common/schemas/batch.yml#/components/schemas/BatchDeleteResponse'
     Country:
       type: object
       description: Defines the required properties to hold information about Country
