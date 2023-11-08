@@ -145,7 +145,7 @@
          "properties":{
             "supported_countries":{
                "type":"array",
-               "description":"Specifies the supported countries(ISO 3166 alpha-2 country code format) by the Provider for all the capabilities such as Tax calculation, syncing invoices/credit notes, TIN validation. If supported countries are different for each capabilities, it shall be specified under the respective capability.",
+               "description":"Specifies the supported countries(ISO 3166 alpha-2 country code format) by the Provider for all the capabilities such as Tax calculation, syncing invoices/credit notes, TRN validation. If supported countries are different for each capabilities, it shall be specified under the respective capability.",
                "items":{
                   "type":"string"
                },
@@ -161,7 +161,7 @@
             },
             "can_validate_shipping_address":{
                "type":"boolean",
-               "description":"Specifies if the full address validation is supported. Even if this is not supported by the Provider, it is mandatory that basic/partial address validation must be suppported."
+               "description":"Specifies if the full address validation is supported. Even if this is not supported by the Provider, it is mandatory that basic/partial address validation must be supported."
             },
             "can_sync_invoices":{
                "type":"boolean",
@@ -199,9 +199,9 @@
                "$ref":"#/definitions/SyncCapabilities",
                "description":"Specifies details on credit note sync capability."
             },
-            "tin_validation_capabilities":{
-               "$ref":"#/definitions/TinValidationCapabilities",
-               "description":"Specifies details on TIN validation capability."
+            "trn_validation_capabilities":{
+               "$ref":"#/definitions/TrnValidationCapabilities",
+               "description":"Specifies details on TRN validation capability."
             }
          },
          "required":[
@@ -296,7 +296,7 @@
          ],
          "title":"SyncCapabilities"
       },
-      "TinValidationCapabilities":{
+      "TrnValidationCapabilities":{
          "type":"object",
          "additionalProperties":false,
          "properties":{
@@ -306,7 +306,7 @@
             },
             "batch_configuration":{
                "type":"object",
-               "description": "Specifies batch TIN Validation related configurations.",
+               "description": "Specifies batch TRN Validation related configurations.",
                "properties":{
                   "is_supported":{
                      "type":"boolean",
@@ -322,19 +322,6 @@
                   "is_supported"
                ]
             },
-            "async_configuration":{
-               "type":"object",
-              "description": "Specifies asynchronous way of performing TIN Validation related configurations.",
-               "properties":{
-                  "is_supported":{
-                     "type":"boolean",
-                     "description":"Specifies if the operation is supported."
-                  }
-               },
-               "required":[
-                  "is_supported"
-               ]
-            },
             "supported_countries":{
                "type":"object",
                "description":"Specifies the supported countries(ISO 3166 alpha-2 country code format) and country specific configuration.",
@@ -344,7 +331,7 @@
                      "properties":{
                         "reference_number":{
                            "type":"object",
-                           "description":"Specifies about reference number configuration. Reference number is the number that provider provides as a proof of the TIN Validation.",
+                           "description":"Specifies about reference number configuration. Reference number is the number that provider provides as a proof of the TRN Validation.",
                            "properties":{
                               "is_supported":{
                                  "type":"boolean",
@@ -401,7 +388,6 @@
          "required":[
             "is_supported",
             "batch_configuration",
-            "async_configuration",
             "supported_countries"
          ]
       },
@@ -471,12 +457,12 @@
             },
             "provider_type":{
                "type":"array",
-               "description":"Specifies the list of the features that the Provider supports. Provider may support Tax or Tax Identification Number(TIN) Validation capabilities or both.",
+               "description":"Specifies the list of the features that the Provider supports. Provider may support Tax or Tax Registration Number(TRN) Validation capabilities or both.",
                "items":{
                   "type":"string",
                   "enum":[
                      "TAX",
-                     "TIN_VALIDATION"
+                     "TRN_VALIDATION"
                   ]
                }
             },

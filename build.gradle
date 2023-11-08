@@ -13,7 +13,7 @@ group build_group
 version build_version
 
 sourceSets {
-    main.resources.srcDirs = ['spec/resources']
+    main.resources.srcDirs = ['spec/capabilities']
 }
 
 repositories {

@@ -115,6 +115,6 @@ public class Example {
 
 ## JSON Schema validation
 Tax provider capabilities for new tax providers will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced below.
-- [TaxProviderCapabilities JSONSchema](spec/resources/TaxProviderCapabilities.json)
+- [TaxProviderCapabilities JSONSchema](spec/capabilities/tax-provider.schema.json)
 
 
