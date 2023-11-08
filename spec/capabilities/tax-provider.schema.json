@@ -248,44 +248,44 @@
                   "type":"string"
                }
             },
-                  "applicable_sync_types": {
+            "applicable_sync_types": {
                "type": "array",
-      "description": "Specifies the supported sync types to perform for an entity from Chargebee platform to the provider.",
-      "items": {
-        "oneOf": [
-          {
-            "type": "string",
-            "enum": ["DONT_SYNC"],
-            "description": "Do not sync the entity."
-          },
-          {
-            "type": "string",
-            "enum": ["SYNC_ONLY_PAID"],
-            "description": "Sync only PAID Invoices or ADJUSTED/REFUNDED Credit notes."
-          },
-          {
-            "type": "string",
-            "enum": ["SYNC_ALL"],
-            "description": "Sync all the entities."
-          },
-          {
-            "type": "string",
-            "enum": ["DONT_COMMIT"],
-            "description": "Do not commit the entity."
-          },
-          {
-            "type": "string",
-            "enum": ["COMMIT_ONLY_PAID"],
-            "description": "Commit only PAID Invoices or ADJUSTED/REFUNDED Credit notes."
-          },
-          {
-            "type": "string",
-            "enum": ["COMMIT_ALL"],
-            "description": "Commit all entities."
-          }
-        ]
-      }
-    }
+               "description": "Specifies the supported sync types to perform for an entity from Chargebee platform to the provider.",
+               "items": {
+                  "oneOf": [
+                     {
+                        "type": "string",
+                        "enum": ["DONT_SYNC"],
+                        "description": "Do not sync the entity."
+                     },
+                     {
+                        "type": "string",
+                        "enum": ["SYNC_ONLY_PAID"],
+                        "description": "Sync only PAID Invoices or ADJUSTED/REFUNDED Credit notes."
+                     },
+                     {
+                        "type": "string",
+                        "enum": ["SYNC_ALL"],
+                        "description": "Sync all the entities."
+                     },
+                     {
+                        "type": "string",
+                        "enum": ["DONT_COMMIT"],
+                        "description": "Do not commit the entity."
+                     },
+                     {
+                        "type": "string",
+                        "enum": ["COMMIT_ONLY_PAID"],
+                        "description": "Commit only PAID Invoices or ADJUSTED/REFUNDED Credit notes."
+                     },
+                     {
+                        "type": "string",
+                        "enum": ["COMMIT_ALL"],
+                        "description": "Commit all entities."
+                     }
+                  ]
+               }
+            }
          },
          "required":[
             "can_commit",
@@ -360,28 +360,32 @@
                      ]
                   }
                },
-               "examples" : [{
-                     "US": { "reference_number": {
-                             "is_supported": true,
-                             "display_name": "Reference number"
-                               },
-                              "customFields": [{
-                              "external_id": "email_address",
-                                "display_name": "Email Address",
-                             "is_mandatory": true,
-                             "is_default": false,
-                              "field_type": "text"
-                             },
-                          {
-                           "external_id": "state_code",
-                           "display_name": "State code",
-                            "is_mandatory": true,
-                           "is_default": false,
-                           "field_type": "text"
-                         }
-                           ]
+               "examples" : [
+                  {
+                    "US": {
+                      "reference_number": {
+                        "is_supported": true,
+                        "display_name": "Reference number"
+                      },
+                      "customFields": [
+                        {
+                          "external_id": "email_address",
+                          "display_name": "Email Address",
+                          "is_mandatory": true,
+                          "is_default": false,
+                          "field_type": "text"
+                        },
+                        {
+                          "external_id": "state_code",
+                          "display_name": "State code",
+                          "is_mandatory": true,
+                          "is_default": false,
+                          "field_type": "text"
                         }
-                     }],
+                      ]
+                    }
+                  }
+               ],
                "additionalProperties":false
             }
          },
