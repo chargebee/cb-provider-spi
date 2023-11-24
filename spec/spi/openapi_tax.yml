@@ -8,9 +8,9 @@ info:
     - Address validation
     - Estimating taxes for sales
     - Submitting invoices for tax filing
-    
+
     If you have an API that provides the services mentioned above and want Chargebee to be able to integrate with it, you can build an adapter service according to this specification.
-    
+
     ## Terminology
     Here's a list of terms we've used to describe this specification.
     ### Merchant 
@@ -29,9 +29,9 @@ info:
     - Translates API responses from the Tax Service Provider APIs to the format understood by Chargebee (as defined in this document).
     ### Authorization
     Chargebee uses HTTP header-based authorization for all the API endpoints associated with Tax Service Adapter. We dynamically pass this authorization key in the HTTP header. The parameter that holds this key is found in the JSON object `api_configuration` required for configuring your onboarding on Chargebee's marketplace. In the `api_configuration` object, our [Taxes Service Adapter SPI](https://chargebee.atlassian.net/l/cp/ca5aZ1mA) checks the authorization key parameter from `credential_configuration.id` and creates the HTTP header-based input query parameter for authorization. The `credential_configuration` is an array of objects with an `id` attribute, and the value of `id` is the parameter containing the authorization key.
-      
+
       Following are the JSON snippets for your reference.
-      
+
        ```json
           "api_configuration": {
               "api_base_url": "https://xyz.abc.com/chargebee",
@@ -889,6 +889,7 @@ components:
       required:
         - creditNoteCode
         - invoiceCode
+        - invoiceId
         - creditNoteType
         - documentDateTime
         - currency
@@ -909,6 +910,10 @@ components:
         invoiceCode:
           type: string
           description: "The unique identifier of the invoice in Chargebee to which this credit note belongs."
+          maxLength: 50
+        invoiceId:
+          type: string
+          description: "The unique identifier of the invoice in the Tax Service Adapter or the Tax Service Provider."
           maxLength: 50
         creditNoteType:
           $ref: '#/components/schemas/CreditNoteType'
@@ -2030,8 +2035,9 @@ components:
     CreditNoteRequestFull:
       description: A request to send a credit note to the Tax Service Adapter.
       value:
-        creditNoteCode: inv_1235
-        invoiceCode: disney_001
+        creditNoteCode: cn_2023_11_24_178
+        invoiceCode: inv_2023_11_30_78
+        invoiceId: disney_001
         creditNoteType: FULL
         documentDateTime: '2022-11-01T10:42:08.131+05:30'
         currency: USD
@@ -2061,8 +2067,9 @@ components:
       description: "The response from the Tax Service Adapter SPI containing the details of a credit note sent by Chargebee."
       value:
         creditNoteId: disney_002
-        creditNoteCode: disney_001
-        invoiceCode: inv_1235
+        creditNoteCode: cn_2023_11_24_178
+        invoiceCode: inv_2023_11_30_78
+        invoiceId: disney_001
         status: PENDING
         creditNoteType: FULL
         documentDateTime: '2022-11-01T10:42:08.131+05:30'
