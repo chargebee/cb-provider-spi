@@ -889,7 +889,6 @@ components:
       required:
         - creditNoteCode
         - invoiceCode
-        - invoiceId
         - creditNoteType
         - documentDateTime
         - currency
