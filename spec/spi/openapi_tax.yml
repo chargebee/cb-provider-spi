@@ -836,7 +836,6 @@ components:
         invoiceId:
           type: string
           description: "The unique identifier of the invoice in the Tax Service Adapter or the Tax Service Provider."
-          maxLength: 50
         invoiceCode:
           type: string
           description: "The unique identifier of the invoice in Chargebee."
@@ -913,7 +912,6 @@ components:
         invoiceId:
           type: string
           description: "The unique identifier of the invoice in the Tax Service Adapter or the Tax Service Provider."
-          maxLength: 50
         creditNoteType:
           $ref: '#/components/schemas/CreditNoteType'
         documentDateTime:
@@ -981,7 +979,6 @@ components:
         creditNoteId:
           type: string
           description: "The unique identifier of the credit note at the Tax Service Provider or Tax Service Adapter."
-          maxLength: 50
         creditNoteCode:
           type: string
           description: "The unique identifier of the credit note in Chargebee."
@@ -1303,7 +1300,6 @@ components:
       required: true
       schema:
         type: string
-        maxLength: 50
       description: "The unique identifier of the invoice at the Tax Service Adapter or Tax Service Provider."
     CreditNoteIdPathParam:
       in: path
@@ -1311,7 +1307,6 @@ components:
       required: true
       schema:
         type: string
-        maxLength: 50
       description: "The unique identifier of the credit note at the Tax Service Adapter or Tax Service Provider."
     MerchantIdPathParam:
       in: path
