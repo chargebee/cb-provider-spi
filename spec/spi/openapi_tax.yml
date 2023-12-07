@@ -1108,6 +1108,7 @@ components:
         - HIGH_VALUE_PHYSICAL_GOODS
         - EXPORT
         - ZERO_VALUE_ITEM
+        - TAX_NOT_CONFIGURED
     TaxExemptReason:
       type: string
       description: "The reason due to which a line item is exempted from tax. This is a mandatory parameter while applying tax exemption on any line-item."
