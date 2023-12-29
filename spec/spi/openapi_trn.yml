@@ -276,7 +276,6 @@ components:
       type: object
       description: Contains the required properties for tax registration number validation response
       required:
-        - requestId
         - trn
         - country
       properties:
