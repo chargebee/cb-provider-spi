@@ -293,6 +293,7 @@ paths:
       operationId: fetchCreditNote
       parameters:
         - $ref: '#/components/parameters/CreditNoteIdPathParam'
+        - $ref: '#/components/parameters/InvoiceIdQueryParam'
       responses:
         '200':
           description: "Credit note retrieved successfully."
@@ -321,6 +322,7 @@ paths:
       operationId: commitCreditNote
       parameters:
         - $ref: '#/components/parameters/CreditNoteIdPathParam'
+        - $ref: '#/components/parameters/InvoiceIdQueryParam'
       responses:
         '204':
           description: Credit note committed successfully.
@@ -345,6 +347,7 @@ paths:
       operationId: voidCreditNote
       parameters:
         - $ref: '#/components/parameters/CreditNoteIdPathParam'
+        - $ref: '#/components/parameters/InvoiceIdQueryParam'
       responses:
         '204':
           description: "Credit note voided successfully."
@@ -1299,6 +1302,13 @@ components:
       in: path
       name: invoiceId
       required: true
+      schema:
+        type: string
+      description: "The unique identifier of the invoice at the Tax Service Adapter or Tax Service Provider."
+    InvoiceIdQueryParam:
+      in: query
+      name: invoiceId
+      required: false
       schema:
         type: string
       description: "The unique identifier of the invoice at the Tax Service Adapter or Tax Service Provider."
