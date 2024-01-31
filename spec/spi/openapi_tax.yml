@@ -990,6 +990,9 @@ components:
           type: string
           description: "The unique identifier of the invoice in Chargebee to which this credit note belongs."
           maxLength: 50
+        invoiceId:
+          type: string
+          description: "The unique identifier of the invoice in the Tax Service Adapter or the Tax Service Provider."
         creditNoteType:
           $ref: '#/components/schemas/CreditNoteType'
         documentDateTime:
