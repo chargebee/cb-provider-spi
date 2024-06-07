@@ -96,6 +96,8 @@ paths:
                 $ref: '#/components/examples/TaxEstimationRequestWithLineItemDiscount'
               TaxEstimationRequestWithCustomerExemption:
                 $ref: '#/components/examples/TaxEstimationRequestWithCustomerExemption'
+              TaxEstimationRequestWithLocationValidation:
+                $ref: '#/components/examples/TaxEstimationRequestWithLocationValidation'
       responses:
         '200':
           description: "Tax estimated successfully for given line items."
@@ -143,6 +145,8 @@ paths:
                 $ref: '#/components/examples/InvoiceRequestSimple'
               InvoiceRequestWithTaxInclusive:
                 $ref: '#/components/examples/InvoiceRequestWithTaxInclusive'
+              InvoiceRequestWithLocationValidation:
+                $ref: '#/components/examples/InvoiceRequestWithLocationValidation'
       responses:
         '201':
           description: "Invoice created successfully."
@@ -1100,6 +1104,8 @@ components:
         hasNexus:
           type: boolean
           description: "Determines whether a tax nexus exists between the Seller and the tax authority at the address provided."
+        locationValidation:
+          $ref: '#/components/schemas/Evidence'
     CreditNoteType:
       type: string
       description: "Whether the credit note was created for the full amount on the invoice or only for a part of the invoice amount."
@@ -1249,6 +1255,26 @@ components:
           type: string
           description: The country of the address following the ISO 3166-1 alpha-2 standard.
           maxLength: 2
+    Evidence:
+      type: object
+      description: "Represent the properties to perform location validation."
+      properties:
+        ip:
+          type: string
+          description: "An ip to validate location, this would be an IP of customer to verify which country customer belong to."
+          maxLength: 50
+        bin:
+          type: string
+          description: "The bank identification number, this is generally first or last 6 digit of card to identify country."
+          maxLength: 15
+        paymentCountryCode:
+          type: string
+          description: "Country code belong to the payment method."
+          maxLength: 5
+        billingCountryCode:
+          type: string
+          description: "Country code belong to the billing."
+          maxLength: 5
     BasicErrorResponse:
       type: object
       description: The basic error response containing the error message and the help documentation link.
@@ -1705,6 +1731,45 @@ components:
             taxIdentifiers:
               - id: taxCode
                 value: PT12312
+    TaxEstimationRequestWithLocationValidation:
+      description: A sample tax estimation request with location validation evidences.
+      value:
+        seller:
+          address:
+            line1: 412 63rd South Avenue
+            city: Baltimore
+            state: MD
+            country: US
+            postalCode: '21230'
+        customer:
+          name: John Doe
+          customerCode: customer_test
+          address:
+            line1: 59, Starlight Avenue
+            city: Newark
+            state: NJ
+            country: US
+            postalCode: '98712'
+          taxIdentifiers:
+            - id: exemptionCode
+              value: ex_gg1s2149812312
+          locationValidation:
+            ip: 127.0.0.1
+            bin: 457200
+            paymentCountryCode: US
+            billingCountryCode: US
+        estimateDateTime: '2022-11-01T10:42:08.131+05:30'
+        currency: USD
+        lineItems:
+          - number: 1
+            itemCode: cbWatch
+            description: A winding watch.
+            quantity: 1
+            amount: 110
+            isTaxInclusive: false
+            taxIdentifiers:
+              - id: taxCode
+                value: PT12312
     TaxEstimationResponseWithCustomerExemption:
       description: A sample response to the tax estimation request for a tax-exempt customer using an exemption code.
       value:
@@ -1930,6 +1995,84 @@ components:
             state: NY
             country: US
             postalCode: "10001"
+        subtotal: 91.85
+        exemptAmount: 0
+        discountAmount: 0
+        taxableAmount: 91.85
+        taxAmount: 8.15
+        total: 100
+        lineItems:
+          - number: 1
+            itemCode: cbWatch
+            description: A winding watch.
+            quantity: 1
+            amount: 100
+            isTaxInclusive: true
+            isTaxable: true
+            taxIdentifiers:
+              - id: taxCode
+                value: PT12312
+            discountAmount: 0
+            subtotal: 100
+            exemptAmount: 0
+            taxableAmount: 91.85
+            taxAmount: 8.15
+            total: 100
+            taxes:
+              - number: 1
+                jurisdiction:
+                  code: "24354"
+                  type: STATE
+                  name: NEW YORK
+                name: SELLER_USE
+                rate: 4
+                taxableAmount: 91.85
+                taxAmount: 3.67
+              - number: 2
+                jurisdiction:
+                  code: "25353"
+                  type: CITY
+                  name: NEW YORK
+                name: SELLER_USE
+                rate: 4.5
+                taxableAmount: 91.85
+                taxAmount: 4.14
+              - number: 3
+                jurisdiction:
+                  code: "79774"
+                  type: OTHER
+                  name: METROPOLITAN COMMUTER TRANSPORTATION DISTRICT
+                name: SELLER_USE
+                rate: 0.375
+                taxableAmount: 91.85
+                taxAmount: 0.34
+    InvoiceRequestWithLocationValidation:
+      description: A request to create a simple invoice in the tax provider system with location validation.
+      value:
+        invoiceCode: inv_12345
+        documentDateTime: 2024-06-07T11:42:08.131+05:30
+        currency: USD
+        seller:
+          address:
+            line1: 412 63rd South Avenue
+            city: Baltimore
+            state: MD
+            country: US
+            postalCode: "21230"
+        customer:
+          name: John Doe
+          customerCode: customer_test
+          address:
+            line1: "20 W 34th St"
+            city: New York
+            state: NY
+            country: US
+            postalCode: "10001"
+          locationValidation:
+            ip: 127.0.0.1
+            bin: 457200
+            paymentCountryCode: US
+            billingCountryCode: US
         subtotal: 91.85
         exemptAmount: 0
         discountAmount: 0
