@@ -1257,23 +1257,23 @@ components:
           maxLength: 2
     Evidence:
       type: object
-      description: "Represent the properties to perform location validation."
+      description: Represent the properties to perform location validation.
       properties:
         ip:
           type: string
-          description: "An ip to validate location, this would be an IP of customer to verify which country customer belong to."
+          description: The customer's IP to determine which country the customer belongs to.
           maxLength: 50
         bin:
           type: string
-          description: "The bank identification number, this is generally first or last 6 digit of card to identify country."
+          description: The country associated with a card by using the first or last 6 digits of the Bank Identification Number.
           maxLength: 15
         paymentCountryCode:
           type: string
-          description: "Country code belong to the payment method."
+          description: Identifies the country code associated with the payment method.
           maxLength: 5
         billingCountryCode:
           type: string
-          description: "Country code belong to the billing."
+          description: Identifies the country code associated with the billing.
           maxLength: 5
     BasicErrorResponse:
       type: object
