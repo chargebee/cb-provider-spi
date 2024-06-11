@@ -1271,10 +1271,6 @@ components:
           type: string
           description: Identifies the country code associated with the payment method.
           maxLength: 5
-        billingCountryCode:
-          type: string
-          description: Identifies the country code associated with the billing.
-          maxLength: 5
     BasicErrorResponse:
       type: object
       description: The basic error response containing the error message and the help documentation link.
@@ -1757,7 +1753,6 @@ components:
             ip: 127.0.0.1
             bin: 457200
             paymentCountryCode: US
-            billingCountryCode: US
         estimateDateTime: '2022-11-01T10:42:08.131+05:30'
         currency: USD
         lineItems:
@@ -2072,7 +2067,6 @@ components:
             ip: 127.0.0.1
             bin: 457200
             paymentCountryCode: US
-            billingCountryCode: US
         subtotal: 91.85
         exemptAmount: 0
         discountAmount: 0
