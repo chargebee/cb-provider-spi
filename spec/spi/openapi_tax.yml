@@ -1105,7 +1105,7 @@ components:
           type: boolean
           description: "Determines whether a tax nexus exists between the Seller and the tax authority at the address provided."
         locationEvidence:
-          $ref: '#/components/schemas/Evidence'
+          $ref: '#/components/schemas/CustomerLocationEvidence'
     CreditNoteType:
       type: string
       description: "Whether the credit note was created for the full amount on the invoice or only for a part of the invoice amount."
@@ -1255,9 +1255,9 @@ components:
           type: string
           description: The country of the address following the ISO 3166-1 alpha-2 standard.
           maxLength: 2
-    Evidence:
+    CustomerLocationEvidence:
       type: object
-      description: Represent the properties for location evidence.
+      description: Represent the properties for customer location evidence.
       properties:
         ip:
           type: string
