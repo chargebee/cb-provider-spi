@@ -96,8 +96,8 @@ paths:
                 $ref: '#/components/examples/TaxEstimationRequestWithLineItemDiscount'
               TaxEstimationRequestWithCustomerExemption:
                 $ref: '#/components/examples/TaxEstimationRequestWithCustomerExemption'
-              TaxEstimationRequestWithLocationValidation:
-                $ref: '#/components/examples/TaxEstimationRequestWithLocationValidation'
+              TaxEstimationRequestWithLocationEvidence:
+                $ref: '#/components/examples/TaxEstimationRequestWithLocationEvidence'
       responses:
         '200':
           description: "Tax estimated successfully for given line items."
@@ -145,8 +145,8 @@ paths:
                 $ref: '#/components/examples/InvoiceRequestSimple'
               InvoiceRequestWithTaxInclusive:
                 $ref: '#/components/examples/InvoiceRequestWithTaxInclusive'
-              InvoiceRequestWithLocationValidation:
-                $ref: '#/components/examples/InvoiceRequestWithLocationValidation'
+              InvoiceRequestWithLocationEvidence:
+                $ref: '#/components/examples/InvoiceRequestWithLocationEvidence'
       responses:
         '201':
           description: "Invoice created successfully."
@@ -1727,8 +1727,8 @@ components:
             taxIdentifiers:
               - id: taxCode
                 value: PT12312
-    TaxEstimationRequestWithLocationValidation:
-      description: A sample tax estimation request with location validation evidences.
+    TaxEstimationRequestWithLocationEvidence:
+      description: A sample tax estimation request with location evidences.
       value:
         seller:
           address:
@@ -2041,8 +2041,8 @@ components:
                 rate: 0.375
                 taxableAmount: 91.85
                 taxAmount: 0.34
-    InvoiceRequestWithLocationValidation:
-      description: A request to create a simple invoice in the tax provider system with location validation.
+    InvoiceRequestWithLocationEvidence:
+      description: A request to create a simple invoice in the tax provider system with location evidence.
       value:
         invoiceCode: inv_12345
         documentDateTime: 2024-06-07T11:42:08.131+05:30
