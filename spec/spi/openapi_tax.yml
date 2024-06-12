@@ -1104,7 +1104,7 @@ components:
         hasNexus:
           type: boolean
           description: "Determines whether a tax nexus exists between the Seller and the tax authority at the address provided."
-        locationValidation:
+        locationEvidence:
           $ref: '#/components/schemas/Evidence'
     CreditNoteType:
       type: string
@@ -1257,7 +1257,7 @@ components:
           maxLength: 2
     Evidence:
       type: object
-      description: Represent the properties to perform location validation.
+      description: Represent the properties for location evidence.
       properties:
         ip:
           type: string
@@ -1749,7 +1749,7 @@ components:
           taxIdentifiers:
             - id: exemptionCode
               value: ex_gg1s2149812312
-          locationValidation:
+          locationEvidence:
             ip: 127.0.0.1
             bin: 457200
             paymentCountryCode: US
@@ -2063,7 +2063,7 @@ components:
             state: NY
             country: US
             postalCode: "10001"
-          locationValidation:
+          locationEvidence:
             ip: 127.0.0.1
             bin: 457200
             paymentCountryCode: US
