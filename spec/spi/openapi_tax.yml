@@ -902,7 +902,6 @@ components:
       description: "The details of a credit note sent to the Tax Service Adapter by Chargebee. A credit note is used to reduce the amount due on an invoice. If the credit note is issued after payments have been made for the invoice, refunds can be issued to the Customer."
       required:
         - creditNoteCode
-        - invoiceCode
         - creditNoteType
         - documentDateTime
         - currency
@@ -979,7 +978,6 @@ components:
       required:
         - creditNoteId
         - creditNoteCode
-        - invoiceCode
         - creditNoteType
         - documentDateTime
         - status
