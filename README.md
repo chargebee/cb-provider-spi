@@ -117,4 +117,16 @@ public class Example {
 Tax provider capabilities for new tax providers will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced below.
 - [TaxProviderCapabilities JSONSchema](spec/capabilities/tax-provider.schema.json)
 
+## Steps to follow release
 
+
+# -> Assume release is 0.0.9. (find release from git page release section)
+# -> create a new branch called release/<release> so this would be release/0.0.9
+# -> create new branch for ticket feat/<ticket-number>
+# -> commit to  feat/<ticket-number>
+# -> Raise PR from feat/<ticket-number> to release/0.0.9
+# -> After PR is approved and merged
+# -> Raise PR from release/0.0.9 to dev
+# once PR is merged it will auto release the 0.0.9 version of SPI for dev code base
+# -> After that raise PR from release/0.0.9 to main
+# once PR is merged it will auto release the 0.0.9 version of SPI for prod codebase
