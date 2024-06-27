@@ -184,7 +184,6 @@
             "can_support_stand_alone_credit_notes":{
                "type":"boolean",
                "description":"Specifies if stand alone credit note is supported."
-
             },
             "is_consistent_pricing_supported":{
                "type":"boolean",
