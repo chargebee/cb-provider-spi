@@ -175,6 +175,16 @@
                "type":"boolean",
                "description":"Specifies if tax inclusivity is supported."
             },
+
+            "can_support_location_validation": {
+               "type": "boolean",
+               "description": "Specifies if location validation is supported."
+            },
+
+            "can_support_stand_alone_credit_notes":{
+               "type":"boolean",
+               "description":"Specifies if stand alone credit note is supported."
+            },
             "is_consistent_pricing_supported":{
                "type":"boolean",
                "description":"Specifies if consistent pricing is supported."
@@ -208,6 +218,7 @@
             "can_have_customer_identifiers",
             "can_have_product_identifiers",
             "can_support_currency_inclusive_of_taxes",
+            "can_support_stand_alone_credit_notes",
             "can_sync_credit_notes",
             "can_sync_invoices",
             "can_validate_shipping_address",
