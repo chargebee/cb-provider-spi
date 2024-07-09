@@ -902,7 +902,6 @@ components:
       description: "The details of a credit note sent to the Tax Service Adapter by Chargebee. A credit note is used to reduce the amount due on an invoice. If the credit note is issued after payments have been made for the invoice, refunds can be issued to the Customer."
       required:
         - creditNoteCode
-        - invoiceCode
         - creditNoteType
         - documentDateTime
         - currency
@@ -979,7 +978,6 @@ components:
       required:
         - creditNoteId
         - creditNoteCode
-        - invoiceCode
         - creditNoteType
         - documentDateTime
         - status
@@ -1313,7 +1311,7 @@ components:
                 maxLength: 250
                 example: lineItems[0].taxIdentifiers[0].value
               code:
-                $ref: '#/components/schemas/ErrorCode'
+                $ref: './schemas/errors.yml#/components/schemas/ErrorCode'
               message:
                 type: string
                 description: A short message describing the reason for the error.
@@ -1324,19 +1322,6 @@ components:
                 description: The link to the documentation for more information about the error and the corrective action.
                 format: uri
                 example: 'https://apidocs.chargebee.com#Authentication'
-    ErrorCode:
-      type: string
-      description: The error codes classify the type of exception that occurred during processing the request.
-      enum:
-        - INVALID_OPERATION
-        - SERVICE_EXCEPTION
-        - SERVICE_UNAVAILABLE
-        - SERVICE_LIMIT_EXCEEDED
-        - MISSING_REQUIRED_DATA
-        - INVALID_DATA
-        - INVALID_TYPE
-        - INVALID_FORMAT
-        - INVALID_RANGE
 
   parameters:
     InvoiceIdPathParam:
