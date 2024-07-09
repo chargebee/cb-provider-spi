@@ -175,6 +175,10 @@
                "type":"boolean",
                "description":"Specifies if tax inclusivity is supported."
             },
+            "can_support_location_validation":{
+               "type":"boolean",
+               "description":"Specifies if location validation is supported."
+            },
             "is_consistent_pricing_supported":{
                "type":"boolean",
                "description":"Specifies if consistent pricing is supported."
