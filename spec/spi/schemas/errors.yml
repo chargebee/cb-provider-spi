@@ -13,6 +13,7 @@ components:
         - INVALID_TYPE
         - INVALID_FORMAT
         - INVALID_RANGE
+        - LOCATION_VALIDATION_FAILED
     BasicErrorResponse:
       type: object
       description: The basic error response containing the error message and the help documentation link.
