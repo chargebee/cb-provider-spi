@@ -93,8 +93,6 @@ paths:
                   $ref: '#/components/examples/LocationValidateResponse'
                 LocationValidateResponseAdditional:
                   $ref: '#/components/examples/LocationValidateResponseAdditional'
-                LocationValidateResponseInvalid:
-                  $ref: '#/components/examples/LocationValidateResponseInvalid'
         '400':
           $ref: '#/components/responses/Error400LocationValidate'
         '401':
@@ -114,6 +112,7 @@ components:
       description: Contains the required properties for location validation response
       required:
         - customerCode
+        - address
       properties:
         name:
           type: string
@@ -131,7 +130,7 @@ components:
           type: string
           description: IP address of the customer.
           maxLength: 10
-        primaryBin:
+        bin:
           type: string
           description: BIN of primary card.
           maxLength: 6
@@ -170,7 +169,7 @@ components:
           type: string
           description: Source country from IP address of the customer.
           maxLength: 10
-        primaryBin:
+        bin:
           type: string
           description: Source country from BIN of primary card.
           maxLength: 10
@@ -204,23 +203,24 @@ components:
                 type: string
                 description: The target entity that has the invalid field or value.
                 maxLength: 250
-                example: phone
+                example: Evidence
               entityField:
                 type: string
                 description: The field of an entity that has the invalid value.
                 maxLength: 250
-                example: Country Code
+                example: Evidence
               code:
                 $ref: './schemas/errors.yml#/components/schemas/ErrorCode'
+                example: LOCATION_VALIDATION_FAILED
               message:
                 type: string
                 description: A short message describing the reason for the error.
                 maxLength: 250
-                example: Country code of phone number is invalid
+                example: Could not resolve location from given evidences.Address is in FR, IP is in US, phone is in India.
               helpUrl:
                 type: string
                 description: The link to the documentation for more information about the error and the corrective action.
-                example: 'https://apidocs.chargebee.com#Phone'
+                example: 'https://apidocs.chargebee.com#Location'
     LocationValidationStatus:
       type: string
       description: The validation status of the location if a single country is identifiable.
@@ -243,7 +243,6 @@ components:
           state: NY
           country: US
           postalCode: "11223"
-        ip: "42.13.134.12"
     LocationValidateRequestAdditional:
       description: Request with more details to validate the tax registration number.
       value:
@@ -253,7 +252,7 @@ components:
           country: US
           postalCode: "11223"
         ip: "42.13.134.12"
-        primaryBin: "411111"
+        bin: "411111"
         phone: "+919876543210"
         taxRegistrationNumber: "FR123456789"
     LocationValidateResponse:
@@ -268,20 +267,10 @@ components:
         sourceCountry: US
         evidenceOrigin:
           ip: US
-          primaryBin: US
+          bin: US
           phone: IN
           taxRegistrationNumber: FR
           address: US
-    LocationValidateResponseInvalid:
-      description: Response with additional details of location validation.
-      value:
-        status: INVALID
-        evidenceOrigin:
-          ip: US
-          primaryBin: DE
-          phone: IN
-          taxRegistrationNumber: FR
-          address: BG
   securitySchemes:
     bearerAuth:
       type: http
