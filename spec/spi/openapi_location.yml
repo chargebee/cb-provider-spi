@@ -58,7 +58,7 @@ tags:
   - name: Health
     description: "Endpoints to monitor the health of the Service Provider and the Service Adapter."
   - name: LocationValidate
-    description: "Endpoints to validate the Location of end customer."
+    description: "Endpoints to validate the location of the end customer."
 paths:
   /health:
     $ref: './paths/health.yml'
@@ -136,7 +136,7 @@ components:
           maxLength: 6
         phone:
           type: string
-          description: Phone number of customer.
+          description: Phone number of the customer.
           maxLength: 15
         address:
           $ref: './openapi_tax.yml#/components/schemas/Address'
@@ -159,7 +159,7 @@ components:
           $ref: '#/components/schemas/EvidenceOrigin'
     EvidenceOrigin:
       type: object
-      description: source country identified from each evidence
+      description: Source country identified from each evidence
       properties:
         taxRegistrationNumber:
           type: string
@@ -179,11 +179,11 @@ components:
           maxLength: 10
         address:
           type: string
-          description: Source country from Phone number of customer.
+          description: Source country from address of customer.
           maxLength: 10
         taxIdentifiers:
           type: string
-          description: Source country from Phone number of customer.
+          description: Source country from Tax Identifiers of customer.
           maxLength: 10
     LocationValidateErrorResponse:
       type: object
@@ -216,7 +216,7 @@ components:
                 type: string
                 description: A short message describing the reason for the error.
                 maxLength: 250
-                example: Could not resolve location from given evidences.Address is in FR, IP is in US, phone is in India.
+                example: Could not resolve location from the given evidences. Address is in FR, IP is in US, phone is in India.
               helpUrl:
                 type: string
                 description: The link to the documentation for more information about the error and the corrective action.
@@ -236,7 +236,7 @@ components:
             $ref: '#/components/schemas/LocationValidateErrorResponse'
   examples:
     LocationValidateRequest:
-      description: Request with minimal details required to validate the location.
+      description: Request minimal details required to validate the location.
       value:
         customerCode: "40303265045"
         address:
@@ -244,7 +244,7 @@ components:
           country: US
           postalCode: "11223"
     LocationValidateRequestAdditional:
-      description: Request with more details to validate the tax registration number.
+      description: Request additional details to validate the location.
       value:
         customerCode: "40303265045"
         address:
