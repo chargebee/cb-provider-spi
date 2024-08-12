@@ -69,7 +69,7 @@ paths:
       tags:
         - LocationValidate
       summary: Validate the location of customer with given evidences
-      description: "This endpoint takes the evidences for location and identify if the customer is taxable"
+      description: "This endpoint validates the location of a customer using the evidences like ip, bin, address, etc. to determine if a customer is taxable or not."
       operationId: locationValidate
       requestBody:
         content:
