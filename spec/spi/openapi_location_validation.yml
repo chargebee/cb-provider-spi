@@ -145,7 +145,6 @@ components:
           description: The tax code fields of the product used for tax calculation.
           items:
             $ref: './openapi_tax.yml#/components/schemas/FieldItem'
-
     LocationValidateResponse:
       type: object
       description: Contains the required properties for location validation response
