@@ -1,0 +1,112 @@
+// File: meta-generator.gradle
+
+task createGenerator {
+    doLast {
+        def generatorFile = file("generate-project.gradle")
+        generatorFile.text = '''
+def javaVersion = project.hasProperty('javaVersion') ? project.getProperty('javaVersion') : '17'
+def gradleVersion = project.hasProperty('gradleVersion') ? project.getProperty('gradleVersion') : '8.5'
+def springBootVersion = project.hasProperty('springBootVersion') ? project.getProperty('springBootVersion') : '3.1.0'
+def openApiSpecDir = project.hasProperty('openApiSpecDir') ? project.getProperty('openApiSpecDir') : 'spec/spi'
+def openApiGeneratorVersion = project.hasProperty('openApiGeneratorVersion') ? project.getProperty('openApiGeneratorVersion') : '6.6.0'
+
+task generateSpringBootProject {
+    doLast {
+        def projectDir = file("generated-spring-boot-project")
+        projectDir.mkdirs()
+
+        def buildGradle = new File(projectDir, "build.gradle")
+        buildGradle.text = """
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '${springBootVersion}'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.openapi.generator' version '${openApiGeneratorVersion}'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_${javaVersion}
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.8'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+def specDir = file("${openApiSpecDir}")
+specDir.eachFile { file ->
+    if (file.name.endsWith('.yml') || file.name.endsWith('.yaml')) {
+        def taskName = "openApiGenerate_" + file.name.replaceAll("[^a-zA-Z0-9]", "_")
+        tasks.create(name: taskName, type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+            generatorName = "spring"
+            inputSpec = file.absolutePath
+            outputDir = "\$buildDir/generated-" + file.name
+            apiPackage = "com.example.api." + file.name.replaceAll("[^a-zA-Z0-9]", "").toLowerCase()
+            modelPackage = "com.example.model." + file.name.replaceAll("[^a-zA-Z0-9]", "").toLowerCase()
+            configOptions = [
+                dateLibrary: "java8",
+                interfaceOnly: "true",
+                skipDefaultInterface: "true"
+            ]
+        }
+        compileJava.dependsOn tasks.named(taskName)
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["\$buildDir/generated-*/src/main/java", 'src/main/java']
+        }
+    }
+}
+"""
+
+        def settingsGradle = new File(projectDir, "settings.gradle")
+        settingsGradle.text = "rootProject.name = 'spring-boot-openapi-project'"
+
+        def srcDir = new File(projectDir, "src/main/java/com/example")
+        srcDir.mkdirs()
+        def applicationJava = new File(srcDir, "Application.java")
+        applicationJava.text = """
+package com.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+"""
+
+        exec {
+            workingDir projectDir
+            commandLine 'gradle', 'wrapper', '--gradle-version', gradleVersion
+        }
+
+        println "Spring Boot project generated successfully in 'generated-spring-boot-project' directory."
+        println "To build the project, navigate to the directory and run: ./gradlew build"
+    }
+}
+'''
+        println "generate-project.gradle file has been created successfully."
+        println "To generate a Spring Boot project, run: gradle -b generate-project.gradle generateSpringBootProject"
+    }
+}

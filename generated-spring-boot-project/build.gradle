@@ -1,0 +1,58 @@
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.openapi.generator' version '7.0.1'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.8'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+def specDir = file("../spec/spi")
+specDir.eachFile { file ->
+    if (file.name.endsWith('.yml') || file.name.endsWith('.yaml')) {
+        def taskName = "openApiGenerate_" + file.name.replaceAll("[^a-zA-Z0-9]", "_")
+        tasks.create(name: taskName, type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+            generatorName = "spring"
+            inputSpec = file.absolutePath
+            outputDir = "/Users/shishir/Documents/cb-provider-spi/build/generated-" + file.name
+            apiPackage = "com.example.api." + file.name.replaceAll("[^a-zA-Z0-9]", "").toLowerCase()
+            modelPackage = "com.example.model." + file.name.replaceAll("[^a-zA-Z0-9]", "").toLowerCase()
+            configOptions = [
+                dateLibrary: "java8",
+                interfaceOnly: "true",
+                skipDefaultInterface: "true"
+            ]
+        }
+        compileJava.dependsOn tasks.named(taskName)
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["/Users/shishir/Documents/cb-provider-spi/build/generated-*/src/main/java", 'src/main/java']
+        }
+    }
+}
