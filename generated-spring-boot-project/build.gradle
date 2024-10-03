@@ -1,16 +1,16 @@
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.0'
+    id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.openapi.generator' version '7.0.1'
+    id 'org.openapi.generator' version '6.6.0'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -25,7 +25,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-def specDir = file("../spec/spi")
+def specDir = file("spec/spi")
 specDir.eachFile { file ->
     if (file.name.endsWith('.yml') || file.name.endsWith('.yaml')) {
         def taskName = "openApiGenerate_" + file.name.replaceAll("[^a-zA-Z0-9]", "_")
