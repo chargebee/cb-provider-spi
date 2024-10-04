@@ -59,27 +59,45 @@ dependencies {
 }
 
 def specDir = '${projectDir}/../cb-provider-spi/spec/spi'
+def specs = ${config.specs.inspect()}
 
-${config.specs.collect { spec ->
-            """
-openApiGenerate {
-    generatorName = 'spring'
-    inputSpec = "\${specDir}/${spec}"
-    outputDir = "\${projectDir}/src/main/java"
-    apiPackage = "${config.basePackage}.api"
-    modelPackage = "${config.basePackage}.model"
-    configOptions = [
-        dateLibrary: 'java8',
-        interfaceOnly: 'true',
-        useSpringBoot3: 'true'
-    ]
+specs.each { spec ->
+    def taskName = "openApiGenerate_\${spec.replace('.yml', '')}"
+    tasks.register(taskName, org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+        generatorName = 'spring'
+        inputSpec = "\$specDir/\$spec"
+        outputDir = "\$projectDir/build/generated-\${spec.replace('.yml', '')}"
+        apiPackage = "${config.basePackage}.api.\${spec.replace('.yml', '').replace('_', '')}"
+        modelPackage = "${config.basePackage}.model.\${spec.replace('.yml', '').replace('_', '')}"
+        configOptions = [
+            dateLibrary: 'java8',
+            interfaceOnly: 'true',
+            useSpringBoot3: 'true'
+        ]
+    }
 }
-"""
-        }.join('\n')}
 
-tasks.named('compileJava') {
+tasks.named('openApiGenerate').configure {
+    enabled = false
+}
+
+tasks.register('openApiGenerateAll') {
     dependsOn tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask)
+    .matching { it.name != 'openApiGenerate' }
 }
+
+sourceSets {
+    main {
+        java {
+            srcDir "src/main/java"
+            ${config.specs.collect { spec ->
+            "srcDir \"\$projectDir/build/generated-${spec.replace('.yml', '')}/src/main/java\""
+        }.join('\n            ')}
+        }
+    }
+}
+
+compileJava.dependsOn tasks.openApiGenerateAll
 """
 
         // Create settings.gradle
@@ -95,8 +113,25 @@ org.gradle.parallel=true
 org.gradle.caching=true
 """
 
+        // Create main application class
+        def mainClassDir = new File(outputDir, "src/main/java/${config.basePackage.replace('.', '/')}")
+        mainClassDir.mkdirs()
+        def mainClassFile = new File(mainClassDir, "Application.java")
+        mainClassFile.text = """
+package ${config.basePackage};
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+"""
+
         // Create src directory structure
-        new File(outputDir, 'src/main/java').mkdirs()
         new File(outputDir, 'src/main/resources').mkdirs()
         new File(outputDir, 'src/test/java').mkdirs()
         new File(outputDir, 'src/test/resources').mkdirs()
