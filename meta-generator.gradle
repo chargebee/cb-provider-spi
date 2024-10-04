@@ -1,0 +1,106 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.yaml:snakeyaml:1.30'
+    }
+}
+
+import org.yaml.snakeyaml.Yaml
+
+def configFile = file('generator.config')
+def config = new Yaml().load(configFile.text)
+
+// Define command-line options
+def cliOptions = [
+        'springBootVersion',
+        'springDependencyManagementVersion',
+        'openApiGeneratorVersion',
+        'javaVersion',
+        'groupId',
+        'version',
+        'basePackage',
+        'outputDir'
+]
+
+// Override config with command-line arguments if provided
+cliOptions.each { option ->
+    if (project.hasProperty(option)) {
+        config[option] = project.property(option)
+    }
+}
+
+def outputDir = file(config.outputDir ?: '../generated-project')
+
+task generateGradleProject {
+    doLast {
+        // Create build.gradle
+        def buildGradleFile = new File(outputDir, 'build.gradle')
+        buildGradleFile.text = """
+plugins {
+    id 'org.springframework.boot' version '${config.springBootVersion}'
+    id 'io.spring.dependency-management' version '${config.springDependencyManagementVersion}'
+    id 'java'
+    id 'org.openapi.generator' version '${config.openApiGeneratorVersion}'
+}
+
+group = '${config.groupId}'
+version = '${config.version}'
+sourceCompatibility = '${config.javaVersion}'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+def specDir = '${projectDir}/../cb-provider-spi/spec/spi'
+
+${config.specs.collect { spec ->
+            """
+openApiGenerate {
+    generatorName = 'spring'
+    inputSpec = "\${specDir}/${spec}"
+    outputDir = "\${projectDir}/src/main/java"
+    apiPackage = "${config.basePackage}.api"
+    modelPackage = "${config.basePackage}.model"
+    configOptions = [
+        dateLibrary: 'java8',
+        interfaceOnly: 'true',
+        useSpringBoot3: 'true'
+    ]
+}
+"""
+        }.join('\n')}
+
+tasks.named('compileJava') {
+    dependsOn tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask)
+}
+"""
+
+        // Create settings.gradle
+        def settingsGradleFile = new File(outputDir, 'settings.gradle')
+        settingsGradleFile.text = """
+rootProject.name = '${config.groupId.tokenize('.').last()}'
+"""
+
+        // Create gradle.properties
+        def gradlePropertiesFile = new File(outputDir, 'gradle.properties')
+        gradlePropertiesFile.text = """
+org.gradle.parallel=true
+org.gradle.caching=true
+"""
+
+        // Create src directory structure
+        new File(outputDir, 'src/main/java').mkdirs()
+        new File(outputDir, 'src/main/resources').mkdirs()
+        new File(outputDir, 'src/test/java').mkdirs()
+        new File(outputDir, 'src/test/resources').mkdirs()
+
+        println "Generated Gradle project structure at ${outputDir.absolutePath}"
+    }
+}
