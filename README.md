@@ -132,6 +132,10 @@ Tax provider capabilities for new tax providers will be validated against a cons
 
 ## Steps to generate a spring boot project for given spec using gradle
 
+Prerequisites:
+Use Java11 or higher version with gradle version greater than or equal to 7.
+For gradle version less than 7 use Java8.
+
 1. Clone repository in local
 ```shell
   git clone git@github.com:chargebee/cb-provider-spi.git
@@ -142,190 +146,38 @@ Tax provider capabilities for new tax providers will be validated against a cons
   cd cb-provider-spi
 ```
 
-3. Add meta-generator.gradle file
-```groovy
-
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'org.yaml:snakeyaml:1.30'
-  }
-}
-
-import org.yaml.snakeyaml.Yaml
-
-def configFile = file('generator.config')
-def config = new Yaml().load(configFile.text)
-
-// Define command-line options
-def cliOptions = [
-        'springBootVersion',
-        'springDependencyManagementVersion',
-        'openApiGeneratorVersion',
-        'javaVersion',
-        'groupId',
-        'version',
-        'basePackage',
-        'outputDir'
-]
-
-// Override config with command-line arguments if provided
-cliOptions.each { option ->
-  if (project.hasProperty(option)) {
-    config[option] = project.property(option)
-  }
-}
-
-def outputDir = file(config.outputDir ?: '../generated-project')
-
-task generateGradleProject {
-  doLast {
-    // Create build.gradle
-    def buildGradleFile = new File(outputDir, 'build.gradle')
-    buildGradleFile.text = """
-plugins {
-    id 'org.springframework.boot' version '${config.springBootVersion}'
-    id 'io.spring.dependency-management' version '${config.springDependencyManagementVersion}'
-    id 'java'
-    id 'org.openapi.generator' version '${config.openApiGeneratorVersion}'
-}
-
-group = '${config.groupId}'
-version = '${config.version}'
-sourceCompatibility = '${config.javaVersion}'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-def specDir = '${projectDir}/../cb-provider-spi/spec/spi'
-def specs = ${config.specs.inspect()}
-
-specs.each { spec ->
-    def taskName = "openApiGenerate_\${spec.replace('.yml', '')}"
-    tasks.register(taskName, org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-        generatorName = 'spring'
-        inputSpec = "\$specDir/\$spec"
-        outputDir = "\$projectDir/build/generated-\${spec.replace('.yml', '')}"
-        apiPackage = "${config.basePackage}.api.\${spec.replace('.yml', '').replace('_', '')}"
-        modelPackage = "${config.basePackage}.model.\${spec.replace('.yml', '').replace('_', '')}"
-        configOptions = [
-            dateLibrary: 'java8',
-            interfaceOnly: 'true',
-            useSpringBoot3: 'true'
-        ]
-    }
-}
-
-tasks.named('openApiGenerate').configure {
-    enabled = false
-}
-
-tasks.register('openApiGenerateAll') {
-    dependsOn tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask)
-    .matching { it.name != 'openApiGenerate' }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir "src/main/java"
-            ${config.specs.collect { spec ->
-      "srcDir \"\$projectDir/build/generated-${spec.replace('.yml', '')}/src/main/java\""
-    }.join('\n            ')}
-        }
-    }
-}
-
-compileJava.dependsOn tasks.openApiGenerateAll
-"""
-
-    // Create settings.gradle
-    def settingsGradleFile = new File(outputDir, 'settings.gradle')
-    settingsGradleFile.text = """
-rootProject.name = '${config.groupId.tokenize('.').last()}'
-"""
-
-    // Create gradle.properties
-    def gradlePropertiesFile = new File(outputDir, 'gradle.properties')
-    gradlePropertiesFile.text = """
-org.gradle.parallel=true
-org.gradle.caching=true
-"""
-
-    // Create main application class
-    def mainClassDir = new File(outputDir, "src/main/java/${config.basePackage.replace('.', '/')}")
-    mainClassDir.mkdirs()
-    def mainClassFile = new File(mainClassDir, "Application.java")
-    mainClassFile.text = """
-package ${config.basePackage};
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-"""
-
-    // Create src directory structure
-    new File(outputDir, 'src/main/resources').mkdirs()
-    new File(outputDir, 'src/test/java').mkdirs()
-    new File(outputDir, 'src/test/resources').mkdirs()
-
-    println "Generated Gradle project structure at ${outputDir.absolutePath}"
-  }
-}
-
-```
-
-4. Add generator.config file
-
-```yaml
-outputDir: ../generated-project
-springBootVersion: 2.7.0
-springDependencyManagementVersion: 1.0.11.RELEASE
-openApiGeneratorVersion: 7.0.1
-javaVersion: 11
-groupId: com.example
-version: 0.0.1-SNAPSHOT
-basePackage: com.example.generated
-specs:
-  - openapi_location_validation.yml
-  - openapi_tax.yml
-  - openapi_trn.yml
-
-```
-
-5. To generate the complete Gradle project structure with default values from generator.config, run:
+3. (a) Generate the Gradle project structure with default configurations:
 ```shell
   gradle -b meta-generator.gradle generateGradleProject
 ```
 
-6. To override versions or other properties, you can pass them as command-line arguments. For example:
+3. (b) Generate the gradle project with custom configurations use below commands. (Custom params if not provided, it will pick it from generator.config file)
 ```shell
   gradle -b meta-generator.gradle generateGradleProject \
   -PspringBootVersion=2.7.1 \
   -PopenApiGeneratorVersion=7.0.1 \
   -PjavaVersion=11 \
-  -PgroupId=com.mycompany \
-  -Pversion=1.0.0-SNAPSHOT \
-  -PbasePackage=com.mycompany.api \
-  -PoutputDir=../my-custom-project
+  -PgroupId=com.adapter \
+  -PbasePackage=com.adapter.api \
+  -PoutputDir=../adapter
 ```
 
-7. After generating the Gradle project, you can navigate to the output directory and run:
+4. After generating the Gradle project, you can navigate to the output directory and run:
 ```shell
-  cd ../generated-project
-  gradle openApiGenerateAll
+  gradle openApiGenerateFullProject
 ```
+
+## Generating Spring boot project using shell script
+
+1. Perform the steps 1 and 2 as mentioned in above section.
+
+2. Execute the script file setup_spring_boot.sh using below command:
+```shell
+  chmod +x setup_spring_boot.sh
+```
+3. Run the script:
+```shell
+  ./setup_spring_boot.sh
+```
+
+

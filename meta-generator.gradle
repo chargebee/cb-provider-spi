@@ -31,10 +31,13 @@ cliOptions.each { option ->
     }
 }
 
-def outputDir = file(config.outputDir ?: '../generated-project')
+def outputDir = file(config.outputDir ?: '../adapter')
 
 task generateGradleProject {
     doLast {
+        // Create the output directory if it doesn't exist
+        outputDir.mkdirs()
+
         // Create build.gradle
         def buildGradleFile = new File(outputDir, 'build.gradle')
         buildGradleFile.text = """
@@ -62,42 +65,35 @@ def specDir = '${projectDir}/../cb-provider-spi/spec/spi'
 def specs = ${config.specs.inspect()}
 
 specs.each { spec ->
-    def taskName = "openApiGenerate_\${spec.replace('.yml', '')}"
+    def taskName = "generate\${spec.replace('.yml', '').capitalize()}"
     tasks.register(taskName, org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
         generatorName = 'spring'
         inputSpec = "\$specDir/\$spec"
-        outputDir = "\$projectDir/build/generated-\${spec.replace('.yml', '')}"
+        outputDir = "\$projectDir/src/main/java"
         apiPackage = "${config.basePackage}.api.\${spec.replace('.yml', '').replace('_', '')}"
         modelPackage = "${config.basePackage}.model.\${spec.replace('.yml', '').replace('_', '')}"
         configOptions = [
             dateLibrary: 'java8',
             interfaceOnly: 'true',
-            useSpringBoot3: 'true'
+            useSpringBoot3: 'true',
+            groupBy: 'tags'
         ]
     }
 }
 
-tasks.named('openApiGenerate').configure {
-    enabled = false
-}
-
-tasks.register('openApiGenerateAll') {
+tasks.register('openApiGenerateFullProject') {
     dependsOn tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask)
-    .matching { it.name != 'openApiGenerate' }
 }
 
 sourceSets {
     main {
         java {
             srcDir "src/main/java"
-            ${config.specs.collect { spec ->
-            "srcDir \"\$projectDir/build/generated-${spec.replace('.yml', '')}/src/main/java\""
-        }.join('\n            ')}
         }
     }
 }
 
-compileJava.dependsOn tasks.openApiGenerateAll
+compileJava.dependsOn tasks.openApiGenerateFullProject
 """
 
         // Create settings.gradle
