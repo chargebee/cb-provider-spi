@@ -81,6 +81,10 @@ specs.each { spec ->
     }
 }
 
+tasks.named('openApiGenerate').configure {
+    enabled = false
+}
+
 tasks.register('openApiGenerateFullProject') {
     dependsOn tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask)
 }
