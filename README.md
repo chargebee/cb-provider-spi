@@ -146,38 +146,19 @@ For gradle version less than 7 use Java8.
   cd cb-provider-spi
 ```
 
-3. (a) Generate the Gradle project structure with default configurations:
+3. Execute the script file setup_spring_boot.sh using below command:
 ```shell
-  gradle -b meta-generator.gradle generateGradleProject
+  chmod +x setup_adapter_spring_boot.sh
 ```
-
-3. (b) Generate the gradle project with custom configurations use below commands. (Custom params if not provided, it will pick it from generator.config file)
+4. (a) Run the script for default configurations in script file :
 ```shell
-  gradle -b meta-generator.gradle generateGradleProject \
-  -PspringBootVersion=2.7.1 \
-  -PopenApiGeneratorVersion=7.0.1 \
-  -PjavaVersion=11 \
-  -PgroupId=com.adapter \
-  -PbasePackage=com.adapter.api \
-  -PoutputDir=../adapter
+  ./setup_adapter_spring_boot.sh
 ```
-
-4. After generating the Gradle project, you can navigate to the output directory and run:
+4. (a) Run the script for custom configurations (all params are optional if not provided will take the default configurations) :
 ```shell
-  gradle openApiGenerateFullProject
+  ./setup_adapter_spring_boot.sh --java-version <version> --output-dir <"output_directory"> --base-package <"package_name">
 ```
-
-## Generating Spring boot project using shell script
-
-1. Perform the steps 1 and 2 as mentioned in above section.
-
-2. Execute the script file setup_spring_boot.sh using below command:
+Example:
 ```shell
-  chmod +x setup_spring_boot.sh
+  ./generate_project.sh --java-version 17 --output-dir "../my-adapter" --base-package "com.adapter"
 ```
-3. Run the script:
-```shell
-  ./setup_spring_boot.sh
-```
-
-
