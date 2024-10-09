@@ -58,7 +58,15 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
+    implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
+    implementation 'jakarta.annotation:jakarta.annotation-api:2.0.0'
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0' 
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0' 
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6' 
 }
 
 def specDir = '${projectDir}/../cb-provider-spi/spec/spi'
@@ -76,7 +84,8 @@ specs.each { spec ->
             dateLibrary: 'java8',
             interfaceOnly: 'true',
             useSpringBoot3: 'true',
-            groupBy: 'tags'
+            groupBy: 'tags',
+            generateApiUtil: 'true'
         ]
     }
 }
