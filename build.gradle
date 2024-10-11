@@ -5,6 +5,7 @@ import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 plugins {
     id "idea"
     id "java"
+    id "application"
     id 'maven-publish'
     id "org.openapi.generator" version "7.0.1"
 }
@@ -13,7 +14,31 @@ group build_group
 version build_version
 
 sourceSets {
+    main {
+        java {
+            srcDirs = ['.']
+        }
+    }
+}
+
+sourceSets {
     main.resources.srcDirs = ['spec/capabilities']
+}
+
+jar {
+    archiveBaseName = 'json-schema-validator'
+    archiveVersion = '1.0'
+    manifest {
+        attributes 'Main-Class': 'JsonSchemaValidator'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 repositories {
@@ -21,8 +46,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
 }
 
 def loadSpecConfig() {
@@ -118,6 +143,10 @@ dependencies {
     implementation 'jakarta.annotation:jakarta.annotation-api:1.3.5'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
     implementation 'com.github.erosb:everit-json-schema:1.14.1'
-    implementation files('libs/everit-json-schema-1.14.1.jar')
+    implementation 'com.github.erosb:everit-json-schema:1.14.2'
 
+}
+
+application {
+    mainClass = 'JsonSchemaValidator'
 }

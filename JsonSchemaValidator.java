@@ -1,350 +1,129 @@
-import java.io.FileReader;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.ValidationException;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class JsonSchemaValidator {
-    private static int index = 0;
-    private static String json;
-
     public static void main(String[] args) {
         if (args.length != 2) {
             System.out.println("Usage: java JsonSchemaValidator <schema_file> <json_file>");
             System.exit(1);
         }
 
-        String schemaFile = args[0];
-        String jsonFile = args[1];
+        String schemaPath = args[0];
+        String jsonPath = args[1];
 
         try {
-            String schemaContent = readFile(schemaFile);
-            String jsonContent = readFile(jsonFile);
+            String jsonContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
 
-            Map<String, Object> schema = parseJson(schemaContent);
-            Map<String, Object> json = parseJson(jsonContent);
+            JSONObject jsonSchema = new JSONObject(new JSONTokener(new FileInputStream(schemaPath)));
+            JSONObject jsonSubject = new JSONObject(jsonContent);
 
-            List<String> errors = validateJson(schema, json, "$");
-            if (errors.isEmpty()) {
-                System.out.println("Success: The JSON content is valid against the schema.");
-            } else {
-                System.out.println("Validation Error(s):");
-                for (String error : errors) {
-                    System.out.println("- " + error);
+            Schema schema = SchemaLoader.load(jsonSchema);
+            schema.validate(jsonSubject);
+
+            System.out.println("Validation successful! The JSON is valid against the schema.");
+
+        } catch (ValidationException ve) {
+            System.out.println("JSON validation failed. Errors:");
+            printValidationErrors(ve, jsonPath);
+        } catch (JSONException je) {
+            System.out.println("JSON parsing error:");
+            printJSONParsingError(je, jsonPath);
+        } catch (IOException e) {
+            System.out.println("Error reading files: " + e.getMessage());
+        }
+    }
+
+    private static void printValidationErrors(ValidationException ve, String jsonPath) {
+        List<String> allMessages = ve.getAllMessages();
+        for (int i = 0; i < allMessages.size(); i++) {
+            System.out.printf("%d. %s%n", i + 1, allMessages.get(i));
+        }
+        System.out.println("\nDetailed error information:");
+        printValidationErrorDetails(ve, jsonPath, 0);
+    }
+
+    private static void printValidationErrorDetails(ValidationException ve, String jsonPath, int depth) {
+        String indent = "  ".repeat(depth);
+        System.out.printf("%sError: %s%n", indent, ve.getMessage());
+        System.out.printf("%sJSON Path: %s%n", indent, ve.getPointerToViolation());
+
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(jsonPath));
+            String errorPath = ve.getPointerToViolation();
+            int lineNumber = findLineNumber(lines, errorPath);
+            if (lineNumber != -1) {
+                System.out.printf("%sLine number: %d%n", indent, lineNumber);
+                System.out.printf("%sLine content: %s%n", indent, lines.get(lineNumber - 1).trim());
+            }
+        } catch (IOException e) {
+            System.out.printf("%sUnable to retrieve line information: %s%n", indent, e.getMessage());
+        }
+
+        List<ValidationException> causingExceptions = ve.getCausingExceptions();
+        if (!causingExceptions.isEmpty()) {
+            System.out.printf("%sNested errors:%n", indent);
+            for (ValidationException cause : causingExceptions) {
+                printValidationErrorDetails(cause, jsonPath, depth + 1);
+            }
+        }
+    }
+
+    private static void printJSONParsingError(JSONException je, String jsonPath) {
+        System.out.println(je.getMessage());
+
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(jsonPath));
+            if (je.getMessage().contains("at character")) {
+                int charPosition = Integer.parseInt(je.getMessage().replaceAll(".*at character (\\d+).*", "$1"));
+                int lineNumber = 1;
+                int currentPosition = 0;
+
+                for (String line : lines) {
+                    if (currentPosition + line.length() + 1 > charPosition) {
+                        System.out.printf("Line number: %d%n", lineNumber);
+                        System.out.printf("Line content: %s%n", line.trim());
+                        System.out.printf("Error position: %s^%n", " ".repeat(charPosition - currentPosition - 1));
+                        break;
+                    }
+                    currentPosition += line.length() + 1; // +1 for newline
+                    lineNumber++;
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
-        } catch (JsonParseException e) {
-            System.out.println("Error parsing JSON: " + e.getMessage());
+            System.out.println("Unable to retrieve line information: " + e.getMessage());
         }
     }
 
-    private static String readFile(String filePath) throws IOException {
-        StringBuilder content = new StringBuilder();
-        try (FileReader reader = new FileReader(filePath)) {
-            int character;
-            while ((character = reader.read()) != -1) {
-                content.append((char) character);
-            }
-        }
-        return content.toString();
-    }
+    private static int findLineNumber(List<String> lines, String jsonPath) {
+        String[] pathParts = jsonPath.split("/");
+        StringBuilder currentPath = new StringBuilder();
+        int nestingLevel = 0;
 
-    private static Map<String, Object> parseJson(String jsonStr) throws JsonParseException {
-        json = jsonStr.trim();
-        index = 0;
-        if (!json.startsWith("{") || !json.endsWith("}")) {
-            throw new JsonParseException("Invalid JSON object");
-        }
-        return parseObject();
-    }
-
-    private static Map<String, Object> parseObject() throws JsonParseException {
-        Map<String, Object> result = new HashMap<>();
-        index++; // Skip opening '{'
-        skipWhitespace();
-
-        while (index < json.length() && json.charAt(index) != '}') {
-            String key = parseString();
-            skipWhitespace();
-
-            if (index >= json.length() || json.charAt(index) != ':') {
-                throw new JsonParseException("Expected ':' after key in object");
-            }
-            index++; // Skip ':'
-            skipWhitespace();
-
-            Object value = parseValue();
-            result.put(key, value);
-
-            skipWhitespace();
-            if (index < json.length() && json.charAt(index) == ',') {
-                index++;
-                skipWhitespace();
-            }
-        }
-
-        if (index >= json.length() || json.charAt(index) != '}') {
-            throw new JsonParseException("Unterminated object");
-        }
-        index++; // Skip closing '}'
-        return result;
-    }
-
-    private static Object parseValue() throws JsonParseException {
-        skipWhitespace();
-        char c = json.charAt(index);
-        if (c == '"') {
-            return parseString();
-        } else if (c == '{') {
-            return parseObject();
-        } else if (c == '[') {
-            return parseArray();
-        } else if (c == 't' && json.startsWith("true", index)) {
-            index += 4;
-            return true;
-        } else if (c == 'f' && json.startsWith("false", index)) {
-            index += 5;
-            return false;
-        } else if (c == 'n' && json.startsWith("null", index)) {
-            index += 4;
-            return null;
-        } else if (c == '-' || (c >= '0' && c <= '9')) {
-            return parseNumber();
-        }
-        throw new JsonParseException("Unexpected character in JSON: " + c);
-    }
-
-    private static String parseString() throws JsonParseException {
-        StringBuilder sb = new StringBuilder();
-        index++; // Skip opening quote
-        while (index < json.length()) {
-            char c = json.charAt(index++);
-            if (c == '"') {
-                return sb.toString();
-            } else if (c == '\\') {
-                if (index >= json.length()) {
-                    throw new JsonParseException("Unterminated string");
-                }
-                c = json.charAt(index++);
-                switch (c) {
-                    case '"':
-                    case '\\':
-                    case '/':
-                        sb.append(c);
-                        break;
-                    case 'b':
-                        sb.append('\b');
-                        break;
-                    case 'f':
-                        sb.append('\f');
-                        break;
-                    case 'n':
-                        sb.append('\n');
-                        break;
-                    case 'r':
-                        sb.append('\r');
-                        break;
-                    case 't':
-                        sb.append('\t');
-                        break;
-                    default:
-                        throw new JsonParseException("Invalid escape sequence: \\" + c);
-                }
-            } else {
-                sb.append(c);
-            }
-        }
-        throw new JsonParseException("Unterminated string");
-    }
-
-    private static List<Object> parseArray() throws JsonParseException {
-        List<Object> result = new ArrayList<>();
-        index++; // Skip opening '['
-        skipWhitespace();
-
-        while (index < json.length() && json.charAt(index) != ']') {
-            result.add(parseValue());
-            skipWhitespace();
-            if (index < json.length() && json.charAt(index) == ',') {
-                index++;
-                skipWhitespace();
-            }
-        }
-
-        if (index >= json.length() || json.charAt(index) != ']') {
-            throw new JsonParseException("Unterminated array");
-        }
-        index++; // Skip closing ']'
-        return result;
-    }
-
-    private static Double parseNumber() throws JsonParseException {
-        int start = index;
-        while (index < json.length()) {
-            char c = json.charAt(index);
-            if ((c >= '0' && c <= '9') || c == '-' || c == '+' || c == '.' || c == 'e' || c == 'E') {
-                index++;
-            } else {
-                break;
-            }
-        }
-        try {
-            return Double.parseDouble(json.substring(start, index));
-        } catch (NumberFormatException e) {
-            throw new JsonParseException("Invalid number format");
-        }
-    }
-
-    private static void skipWhitespace() {
-        while (index < json.length() && Character.isWhitespace(json.charAt(index))) {
-            index++;
-        }
-    }
-
-    private static List<String> validateJson(Map<String, Object> schema, Map<String, Object> json, String path) {
-        List<String> errors = new ArrayList<>();
-
-        if (schema.containsKey("additionalProperties") && !(boolean)schema.get("additionalProperties")) {
-            Set<String> allowedProperties = ((Map<String, Object>) schema.get("properties")).keySet();
-            for (String key : json.keySet()) {
-                if (!allowedProperties.contains(key)) {
-                    errors.add(path + ": Additional property '" + key + "' is not allowed");
-                }
-            }
-        }
-
-        for (Map.Entry<String, Object> entry : schema.entrySet()) {
-            String key = entry.getKey();
-            Object schemaValue = entry.getValue();
-
-            if (schemaValue instanceof Map) {
-                Map<String, Object> schemaObject = (Map<String, Object>) schemaValue;
-                String type = (String) schemaObject.get("type");
-                Object jsonValue = json.get(key);
-
-                String currentPath = path + "." + key;
-
-                if (jsonValue == null) {
-                    if (schemaObject.containsKey("required") && (boolean) schemaObject.get("required")) {
-                        errors.add(currentPath + ": Required field is missing");
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i).trim();
+            if (line.contains(":")) {
+                String key = line.split(":")[0].trim().replace("\"", "");
+                if (nestingLevel < pathParts.length && key.equals(pathParts[nestingLevel])) {
+                    currentPath.append("/").append(key);
+                    nestingLevel++;
+                    if (currentPath.toString().equals(jsonPath)) {
+                        return i + 1; // +1 because line numbers start at 1
                     }
-                    continue;
-                }
-
-                switch (type) {
-                    case "string":
-                        if (!(jsonValue instanceof String)) {
-                            errors.add(currentPath + ": Expected string, got " + jsonValue.getClass().getSimpleName());
-                        } else {
-                            String stringValue = (String) jsonValue;
-                            if (schemaObject.containsKey("pattern")) {
-                                String pattern = (String) schemaObject.get("pattern");
-                                if (!Pattern.matches(pattern, stringValue)) {
-                                    errors.add(currentPath + ": Does not match pattern " + pattern);
-                                }
-                            }
-                            if (schemaObject.containsKey("minLength")) {
-                                int minLength = (int) schemaObject.get("minLength");
-                                if (stringValue.length() < minLength) {
-                                    errors.add(currentPath + ": String length is less than minLength " + minLength);
-                                }
-                            }
-                            if (schemaObject.containsKey("maxLength")) {
-                                int maxLength = (int) schemaObject.get("maxLength");
-                                if (stringValue.length() > maxLength) {
-                                    errors.add(currentPath + ": String length is greater than maxLength " + maxLength);
-                                }
-                            }
-                            if (schemaObject.containsKey("enum")) {
-                                List<String> enumValues = (List<String>) schemaObject.get("enum");
-                                if (!enumValues.contains(stringValue)) {
-                                    errors.add(currentPath + ": Value is not in enum " + enumValues);
-                                }
-                            }
-                        }
-                        break;
-                    case "number":
-                        if (!(jsonValue instanceof Number)) {
-                            errors.add(currentPath + ": Expected number, got " + jsonValue.getClass().getSimpleName());
-                        }
-                        break;
-
-                    case "integer":
-                        if (!(jsonValue instanceof Number)) {
-                            errors.add(currentPath + ": Expected number, got " + jsonValue.getClass().getSimpleName());
-                        } else {
-                            double numberValue = ((Number) jsonValue).doubleValue();
-                            if (schemaObject.containsKey("minimum")) {
-                                double minimum = ((Number) schemaObject.get("minimum")).doubleValue();
-                                if (numberValue < minimum) {
-                                    errors.add(currentPath + ": Value is less than minimum " + minimum);
-                                }
-                            }
-                            if (schemaObject.containsKey("maximum")) {
-                                double maximum = ((Number) schemaObject.get("maximum")).doubleValue();
-                                if (numberValue > maximum) {
-                                    errors.add(currentPath + ": Value is greater than maximum " + maximum);
-                                }
-                            }
-                        }
-                        break;
-                    case "boolean":
-                        if (!(jsonValue instanceof Boolean)) {
-                            errors.add(currentPath + ": Expected boolean, got " + jsonValue.getClass().getSimpleName());
-                        }
-                        break;
-                    case "object":
-                        if (!(jsonValue instanceof Map)) {
-                            errors.add(currentPath + ": Expected object, got " + jsonValue.getClass().getSimpleName());
-                        } else if (schemaObject.containsKey("properties")) {
-                            Map<String, Object> properties = (Map<String, Object>) schemaObject.get("properties");
-                            errors.addAll(validateJson(properties, (Map<String, Object>) jsonValue, currentPath));
-                        }
-                        break;
-                    case "array":
-                        if (!(jsonValue instanceof List)) {
-                            errors.add(currentPath + ": Expected array, got " + jsonValue.getClass().getSimpleName());
-                        } else {
-                            List<Object> jsonArray = (List<Object>) jsonValue;
-                            if (schemaObject.containsKey("items")) {
-                                Map<String, Object> itemsSchema = (Map<String, Object>) schemaObject.get("items");
-                                for (int i = 0; i < jsonArray.size(); i++) {
-                                    if (itemsSchema.containsKey("type") && itemsSchema.get("type").equals("object")) {
-                                        errors.addAll(validateJson(itemsSchema, (Map<String, Object>) jsonArray.get(i), currentPath + "[" + i + "]"));
-                                    }
-                                }
-                            }
-                            if (schemaObject.containsKey("minItems")) {
-                                int minItems = (int) schemaObject.get("minItems");
-                                if (jsonArray.size() < minItems) {
-                                    errors.add(currentPath + ": Array has fewer than minItems " + minItems);
-                                }
-                            }
-                            if (schemaObject.containsKey("maxItems")) {
-                                int maxItems = (int) schemaObject.get("maxItems");
-                                if (jsonArray.size() > maxItems) {
-                                    errors.add(currentPath + ": Array has more than maxItems " + maxItems);
-                                }
-                            }
-                            if (schemaObject.containsKey("uniqueItems") && (boolean) schemaObject.get("uniqueItems")) {
-                                Set<Object> uniqueItems = new HashSet<>(jsonArray);
-                                if (uniqueItems.size() != jsonArray.size()) {
-                                    errors.add(currentPath + ": Array contains non-unique items");
-                                }
-                            }
-                        }
-                        break;
                 }
             }
+            if (line.contains("{")) nestingLevel++;
+            if (line.contains("}")) nestingLevel--;
         }
-
-        return errors;
-    }
-
-    private static class JsonParseException extends Exception {
-        public JsonParseException(String message) {
-            super(message);
-        }
+        return -1; // Path not found
     }
 }
