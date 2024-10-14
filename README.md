@@ -117,6 +117,27 @@ public class Example {
 Tax provider capabilities for new tax providers will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced below.
 - [TaxProviderCapabilities JSONSchema](spec/capabilities/tax-provider.schema.json)
 
+Prerequisites:
+Use Java8 or higher version.
+
+1. Clone repository in local
+```shell
+  git clone git@github.com:chargebee/cb-provider-spi.git
+```
+
+2. Navigate to the repository
+```shell
+  cd cb-provider-spi
+```
+3. Run the script to perform json schema validation:
+```shell
+  ./json_schema_validation.sh <path to json file>
+```
+Example:
+```shell
+  ./json_schema_validation.sh spec/capabilities/tax-provider.file.json
+```
+
 ## Steps to follow release
 
 
@@ -133,8 +154,7 @@ Tax provider capabilities for new tax providers will be validated against a cons
 ## Steps to generate a spring boot project for given spec using gradle
 
 Prerequisites:
-Use Java11 or higher version with gradle version greater than or equal to 7.
-For gradle version less than 7 use Java8.
+Use Java8 or higher version.
 
 1. Clone repository in local
 ```shell
@@ -146,19 +166,15 @@ For gradle version less than 7 use Java8.
   cd cb-provider-spi
 ```
 
-3. Execute the script file setup_spring_boot.sh using below command:
+3. (a) Run the script to generate spring boot project for an openapi spec file with default configurations:
 ```shell
-  chmod +x setup_adapter_spring_boot.sh
+  ./setup_adapter_spring_boot.sh --spec <openapi spec file name>
 ```
-4. (a) Run the script for default configurations in script file :
+3. (b) Run the script to generate spring boot project for an openapi spec file with custom configurations (params are optional, if not provided will take the default configurations) :
 ```shell
-  ./setup_adapter_spring_boot.sh
-```
-4. (a) Run the script for custom configurations (all params are optional if not provided will take the default configurations) :
-```shell
-  ./setup_adapter_spring_boot.sh --java-version <version> --output-dir <"output_directory"> --base-package <"package_name">
+  ./setup_adapter_spring_boot.sh --java <version> --output <output_directory> --package <package_name> --spec <openapi spec file name>
 ```
 Example:
 ```shell
-  ./generate_project.sh --java-version 17 --output-dir "../my-adapter" --base-package "com.adapter"
+  ./setup_adapter_spring_boot.sh --java 11 --output ../my-adapter --package com.adapter --spec openapi_tax.yml
 ```

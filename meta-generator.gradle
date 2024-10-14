@@ -21,7 +21,9 @@ def cliOptions = [
         'groupId',
         'version',
         'basePackage',
-        'outputDir'
+        'outputDir',
+        'specs',
+        'singleSpec'
 ]
 
 // Override config with command-line arguments if provided
@@ -70,7 +72,12 @@ dependencies {
 }
 
 def specDir = '${projectDir}/../cb-provider-spi/spec/spi'
-def specs = ${config.specs.inspect()}
+def specs = ${config.specs ?: []}
+def singleSpec = '${config.singleSpec ?: ""}'
+
+if (singleSpec) {
+    specs = [singleSpec]
+}
 
 specs.each { spec ->
     def taskName = "generate\${spec.replace('.yml', '').capitalize()}"

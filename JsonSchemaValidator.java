@@ -12,18 +12,24 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class JsonSchemaValidator {
+
+    private static final String DEFAULT_SCHEMA_PATH = "schema.json";
+    private static final String SCHEMA_ENV_VAR = "JSON_SCHEMA_PATH";
     public static void main(String[] args) {
-        if (args.length != 2) {
-            System.out.println("Usage: java JsonSchemaValidator <schema_file> <json_file>");
+        if (args.length != 1) {
+            System.out.println("Usage: java JsonSchemaValidator <json_file>");
             System.exit(1);
         }
 
-        String schemaPath = args[0];
-        String jsonPath = args[1];
+        String jsonPath = args[0];
+        String schemaPath = System.getenv(SCHEMA_ENV_VAR);
+        if (schemaPath == null || schemaPath.isEmpty()) {
+            schemaPath = DEFAULT_SCHEMA_PATH;
+            System.out.println("Warning: JSON_SCHEMA_PATH not set. Using default schema path: " + DEFAULT_SCHEMA_PATH);
+        }
 
         try {
             String jsonContent = new String(Files.readAllBytes(Paths.get(jsonPath)));
-
             JSONObject jsonSchema = new JSONObject(new JSONTokener(new FileInputStream(schemaPath)));
             JSONObject jsonSubject = new JSONObject(jsonContent);
 

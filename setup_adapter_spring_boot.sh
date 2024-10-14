@@ -13,6 +13,25 @@ SPEC_FILES=""
 PACKAGE_NAME="com.adapter"
 SPEC_DIR="spec/spi"
 
+# Function to update generator.config
+update_generator_config() {
+    local spec_file=$1
+    local config_file="generator.config"
+
+    # Update the specs in the config file
+    sed -i "s/^specs:.*/specs:\n  - $spec_file/" "$config_file"
+}
+
+# Function to update spec.config
+update_spec_config() {
+    local spec_file=$1
+    local config_file="spec.config"
+    local spec_name=$(basename "$spec_file" .yml)
+
+    # Create or overwrite the spec.config file with a single entry
+    echo "{ name: \"$spec_name\", projectName: \"$spec_name\" }" > "$config_file"
+}
+
 # Parse command line arguments
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -25,7 +44,7 @@ while [ $# -gt 0 ]; do
             shift 2
             ;;
         --spec)
-            SPEC_FILES="$2"  # Set SPEC_FILES to the provided argument
+            SPEC_FILES="$2"
             shift 2
             ;;
         --package)
@@ -61,6 +80,12 @@ get_all_spec_files() {
 # If no spec files are specified, use all available spec files
 if [ -z "$SPEC_FILES" ]; then
     SPEC_FILES=$(get_all_spec_files)
+else
+    # Verify that the specified spec file exists
+    if [ ! -f "$SPEC_DIR/$SPEC_FILES" ]; then
+        echo "Error: Specified spec file '$SPEC_FILES' not found in '$SPEC_DIR'."
+        exit 1
+    fi
 fi
 
 if [ -z "$SPEC_FILES" ]; then
@@ -98,10 +123,17 @@ if ! command -v gradle &> /dev/null; then
     exit 1
 fi
 
-# Format SPEC_FILES for Groovy list
-IFS=',' read -r -a specArray <<< "$SPEC_FILES"
-SPEC_FILES_LIST=$(printf "'%s'," "${specArray[@]}")
-SPEC_FILES_LIST=${SPEC_FILES_LIST%,}  # Remove trailing comma
+# Update config files if a single spec file is provided
+if [ -n "$SPEC_FILES" ] && [ $(echo "$SPEC_FILES" | tr ',' '\n' | wc -l) -eq 1 ]; then
+    update_generator_config "$SPEC_FILES"
+    update_spec_config "$SPEC_FILES"
+    SPEC_FILES_LIST="'$SPEC_FILES'"
+else
+    # Format SPEC_FILES for Groovy list
+    IFS=',' read -r -a specArray <<< "$SPEC_FILES"
+    SPEC_FILES_LIST=$(printf "'%s'," "${specArray[@]}")
+    SPEC_FILES_LIST=${SPEC_FILES_LIST%,}  # Remove trailing comma
+fi
 
 # Generate Gradle project
 gradle -b meta-generator.gradle generateGradleProject \
@@ -109,7 +141,8 @@ gradle -b meta-generator.gradle generateGradleProject \
     -PopenApiGeneratorVersion="$OPENAPI_VERSION" \
     -PoutputDir="$OUTPUT_DIR" \
     -PbasePackage="$PACKAGE_NAME" \
-    -Pspecs="[$SPEC_FILES_LIST]"
+    -Pspecs="[$SPEC_FILES_LIST]" \
+    -PsingleSpec="$SPEC_FILES"
 
 if [ $? -ne 0 ]; then
     echo "Error: Gradle project generation failed."
@@ -130,5 +163,3 @@ cd ..
 
 echo "Project generation complete. Output directory: $OUTPUT_DIR"
 echo "Generated spec files: $SPEC_FILES"
-
-
