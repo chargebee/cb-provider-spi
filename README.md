@@ -117,6 +117,27 @@ public class Example {
 Tax provider capabilities for new tax providers will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced below.
 - [TaxProviderCapabilities JSONSchema](spec/capabilities/tax-provider.schema.json)
 
+Prerequisites:
+Use Java8 or higher version.
+
+1. Clone repository in local
+```shell
+  git clone git@github.com:chargebee/cb-provider-spi.git
+```
+
+2. Navigate to the repository
+```shell
+  cd cb-provider-spi
+```
+3. Run the script to perform json schema validation:
+```shell
+  ./json_schema_validation.sh <path to json file>
+```
+Example:
+```shell
+  ./json_schema_validation.sh spec/capabilities/tax-provider.file.json
+```
+
 ## Steps to follow release
 
 
@@ -128,3 +149,32 @@ Tax provider capabilities for new tax providers will be validated against a cons
 6. After PR is approved and merged
 7. Raise PR from release/0.0.9 to dev. Once PR is merged it will auto release the 0.0.9 version of SPI for dev code base
 8. After that raise PR from release/0.0.9 to main. Once PR is merged it will auto release the 0.0.9 version of SPI for prod codebase
+
+
+## Steps to generate a spring boot project for given spec using gradle
+
+Prerequisites:
+Use Java8 or higher version.
+
+1. Clone repository in local
+```shell
+  git clone git@github.com:chargebee/cb-provider-spi.git
+```
+
+2. Navigate to the repository
+```shell
+  cd cb-provider-spi
+```
+
+3. (a) Run the script to generate spring boot project for an openapi spec file with default configurations:
+```shell
+  ./setup_adapter_spring_boot.sh --spec <openapi spec file name>
+```
+3. (b) Run the script to generate spring boot project for an openapi spec file with custom configurations (params are optional, if not provided will take the default configurations) :
+```shell
+  ./setup_adapter_spring_boot.sh --java <version> --output <output_directory> --package <package_name> --spec <openapi spec file name>
+```
+Example:
+```shell
+  ./setup_adapter_spring_boot.sh --java 11 --output ../my-adapter --package com.adapter --spec openapi_tax.yml
+```
