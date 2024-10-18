@@ -117,6 +117,29 @@ public class Example {
 Tax provider capabilities for new tax providers will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced below.
 - [TaxProviderCapabilities JSONSchema](spec/capabilities/tax-provider.schema.json)
 
+## Generating Client libraries in python using openapi spec file
+
+Prerequisites:
+Use Python3.7 or higher version.
+
+1. Clone repository in local
+```shell
+  git clone git@github.com:chargebee/cb-provider-spi.git
+```
+
+2. Navigate to the repository
+```shell
+  cd cb-provider-spi
+```
+3. Run the script to perform json schema validation:
+```shell
+  sh generate_python_client_libraries.sh <path to openapi spec file>
+```
+Example:
+```shell
+  sh generate_python_client_libraries.sh spec/spi/openapi_tax.yml
+```
+
 ## Steps to follow release
 
 
