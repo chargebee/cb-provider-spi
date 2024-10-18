@@ -117,6 +117,27 @@ public class Example {
 Tax provider capabilities for new tax providers will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced below.
 - [TaxProviderCapabilities JSONSchema](spec/capabilities/tax-provider.schema.json)
 
+Prerequisites:
+Use Java8 or higher version.
+
+1. Clone repository in local
+```shell
+  git clone git@github.com:chargebee/cb-provider-spi.git
+```
+
+2. Navigate to the repository
+```shell
+  cd cb-provider-spi
+```
+3. Run the script to perform json schema validation:
+```shell
+  sh json_schema_validation.sh <path to json file>
+```
+Example:
+```shell
+  sh json_schema_validation.sh spec/capabilities/tax-provider.file.json
+```
+
 ## Steps to follow release
 
 

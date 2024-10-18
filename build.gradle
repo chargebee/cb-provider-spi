@@ -13,7 +13,14 @@ group build_group
 version build_version
 
 sourceSets {
-    main.resources.srcDirs = ['spec/capabilities']
+    main {
+        java {
+            srcDirs = ['src/main/java', '.']
+        }
+        resources {
+            srcDirs = ['src/main/resources', 'spec/capabilities']
+        }
+    }
 }
 
 repositories {
@@ -21,8 +28,30 @@ repositories {
 }
 
 java {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
+}
+
+// JSON Schema Validator JAR configuration
+task jsonSchemaValidatorJar(type: Jar) {
+    archiveBaseName = 'json-schema-validator'
+    archiveVersion = '1.0'
+    manifest {
+        attributes 'Main-Class': 'JsonSchemaValidator'
+    }
+    from(sourceSets.main.output) {
+        include 'JsonSchemaValidator.class'
+        include 'spec/capabilities/**'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+task buildJsonSchemaValidator {
+    dependsOn jsonSchemaValidatorJar
 }
 
 def loadSpecConfig() {
@@ -119,4 +148,6 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:5.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    // JSON Schema validation dependencies
+    implementation 'com.github.erosb:everit-json-schema:1.14.2'
 }
