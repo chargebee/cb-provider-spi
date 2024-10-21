@@ -133,11 +133,11 @@ Use Python3.7 or higher version.
 ```
 3. Run the script to perform json schema validation:
 ```shell
-  sh generate_python_client_libraries.sh <path to openapi spec file>
+  sh python_client_libraries.sh <path to openapi spec file>
 ```
 Example:
 ```shell
-  sh generate_python_client_libraries.sh spec/spi/openapi_tax.yml
+  sh python_client_libraries.sh spec/spi/openapi_tax.yml
 ```
 
 ## Steps to follow release
