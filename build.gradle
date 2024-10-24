@@ -151,7 +151,3 @@ dependencies {
     // JSON Schema validation dependencies
     implementation 'com.github.erosb:everit-json-schema:1.14.2'
 }
-
-test {
-    useJUnitPlatform()
-}
