@@ -5,8 +5,9 @@ get:
   tags:
     - Health
   # NOTE: No security scheme for the health endpoint.
-  security:
-    - { }
+  parameters:
+    - $ref: '../schemas/headers.yml#/components/parameters/MerchantId'
+    - $ref: '../schemas/headers.yml#/components/parameters/TraceId'
   responses:
     '200':
       description: Service is healthy.

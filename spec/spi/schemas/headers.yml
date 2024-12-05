@@ -1,0 +1,22 @@
+components:
+  parameters:
+    TraceId:
+      in: header
+      name: trace_id
+      required: false
+      description: Unique id of the request will be sent by Chargebee
+      schema:
+        type: string
+    MerchantId:
+      in: header
+      name: merchant_id
+      required: false
+      description: Merchant's domain name will be sent by Chargebee
+      schema:
+        type: string
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: The json of all the parameters specified in authentication configuration of tax app will be sent by Chargebee.
