@@ -10,8 +10,7 @@ on:
 
 jobs:
   build:
-    uses: chargebee/cb-cicd-pipelines/.github/workflows/gradle-library-ci-workflow.yml@v1.23.0
+    uses: chargebee/cb-cicd-pipelines/.github/workflows/gradle-library-ci-workflow.yml@v3.1.5
     secrets: inherit
     with:
-      CI_ROLE: ${{ secrets.CI_ROLE }}
       GENERATE_OPEN_API: true
