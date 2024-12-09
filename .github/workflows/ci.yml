@@ -13,5 +13,5 @@ jobs:
     uses: chargebee/cb-cicd-pipelines/.github/workflows/gradle-library-ci-workflow.yml@v1.23.0
     secrets: inherit
     with:
-      CI_ROLE: ${{ secrets.CI_ROLE }}
+      CI_ROLE: ${{secrets.CI_ROLE}}
       GENERATE_OPEN_API: true
