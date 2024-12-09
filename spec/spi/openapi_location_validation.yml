@@ -106,6 +106,9 @@ paths:
         '503':
           $ref: './schemas/errors.yml#/components/responses/Error503'
 components:
+  securitySchemes:
+    Authorization:
+      $ref: './schemas/headers.yml#/components/securitySchemes/Authorization'
   schemas:
     LocationValidationEvidence:
       type: object
@@ -273,15 +276,5 @@ components:
           phone: IN
           taxRegistrationNumber: FR
           address: US
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-    apiKey:
-      type: apiKey
-      description: Bearer token based authentication.
-      name: bearer
-      in: header
 security:
-  - bearerAuth: []
-  - apiKey: []
+  - Authorization: []
