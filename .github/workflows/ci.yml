@@ -8,9 +8,149 @@ on:
     branches:
       - 'release/*'
 
+permissions:
+  pages: write
+  id-token: write
+  contents: write
+  checks: write
+
+env:
+  ARTIFACTORY_BUILD_URL: ${{ secrets.ARTIFACTORY_BUILD_URL }}
+  JDK_VERSION: 17
+  GENERATE_OPEN_API: true
+  DEPLOY_DOCS: false
+  DOCS_PATH: ./build/docs/javadoc
+  AWS_REGION: us-east-1
+
+
 jobs:
-  build:
-    uses: chargebee/cb-cicd-pipelines/.github/workflows/gradle-library-ci-workflow.yml@v3.1.5
-    secrets: inherit
-    with:
-      GENERATE_OPEN_API: true
+  library-build:
+    if: ${{ ( github.event_name == 'push' && startsWith(github.ref,'release/') ) || ( github.event.pull_request.merged && ( github.base_ref == 'main' || github.base_ref == 'dev' ) )}}
+    runs-on: cicd-self-hosted-runner
+    environment: build-environment
+    steps:
+      - name: Set artifactory
+        if: ${{ github.event_name == 'push' || github.event.pull_request.merged}}
+        run: |
+          ARTIFACTORY_PUBLISH_URL=https://cb-artifactory-606027973764.d.codeartifact.us-east-1.amazonaws.com/maven/cb-private-dev/
+          if [[ "${{ github.base_ref }}" = "main" ]]; then
+            ARTIFACTORY_PUBLISH_URL=https://cb-artifactory-606027973764.d.codeartifact.us-east-1.amazonaws.com/maven/cb-private-prod/
+          fi
+          echo "ARTIFACTORY_PUBLISH_URL=$(echo $ARTIFACTORY_PUBLISH_URL)" >> $GITHUB_ENV
+          echo "BUILD=$(echo 'true')" >> $GITHUB_ENV
+
+      - name: Detect release
+        if: ${{ github.event.pull_request.merged }}
+        run: |
+          echo "Head Ref: ${{ github.head_ref }}"
+          echo "Base Ref: ${{ github.base_ref }}"
+          
+          RELEASE=false
+          TAG=false
+          TAG_PREFIX=rc
+          
+          if [[ ${{ github.head_ref }} =~ "release/" ]]; then
+            VERSION=$(echo ${{ github.head_ref }} | cut -d '/' -f2)
+            
+            if [[ ${{ github.base_ref }} = "main" ]]; then
+              TAG=true
+              RELEASE=true
+              TAG_PREFIX=release
+              if [[ ${{ env.DEPLOY_DOCS }} = "true" ]]; then
+                echo "DEPLOY_DOCS=$(echo 'true')" >> $GITHUB_ENV
+              fi
+            fi
+          
+            if [[ ${{ github.base_ref }} = "dev" || ${{ github.base_ref }} = "develop" ]] ; then
+              TAG=true
+              RELEASE=true
+            fi
+          
+            echo "VERSION=$(echo $VERSION)" >> $GITHUB_ENV
+          fi
+          echo "RELEASE=$(echo $RELEASE)" >> $GITHUB_ENV
+          echo "TAG=$(echo $TAG)" >> $GITHUB_ENV
+          echo "TAG_PREFIX=$(echo $TAG_PREFIX)" >> $GITHUB_ENV
+          
+          echo "RELEASE = $RELEASE, TAG = $TAG, VERSION = $VERSION, TAG_PREFIX = $TAG_PREFIX"
+
+      - name : Checkout
+        if: ${{env.BUILD == 'true'}}
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        if: ${{env.BUILD == 'true'}}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JDK_VERSION }}
+          distribution: "corretto"
+          cache: "gradle"
+
+      - name: Configure AWS Credentials for CodeArtifact
+        if: ${{env.BUILD == 'true'}}
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.CI_ROLE }}
+          role-duration-seconds: 3600
+          aws-region: us-east-1
+
+      - name: Setup AWS Endpoints
+        if: ${{env.BUILD == 'true'}}
+        run: |
+          export AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
+          export AWS_DEFAULT_REGION=${{ env.AWS_REGION }}
+          export CODEARTIFACT_USER=aws
+          export CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain cb-artifactory --domain-owner $AWS_ACCOUNT_ID --query authorizationToken --output text)
+          echo "::add-mask::$CODEARTIFACT_AUTH_TOKEN"
+          echo "CODEARTIFACT_USER=$CODEARTIFACT_USER" >> $GITHUB_ENV
+          echo "CODEARTIFACT_AUTH_TOKEN=$CODEARTIFACT_AUTH_TOKEN" >> $GITHUB_ENV
+
+
+      - name: Generate open api
+        if: ${{env.GENERATE_OPEN_API == true}}
+        run: ./gradlew clean openApiGenerate -Partifactory_build_url=$ARTIFACTORY_BUILD_URL
+
+      - name: Build
+        if: ${{env.BUILD == 'true'}}
+        run: ./gradlew clean build -Partifactory_build_url=$ARTIFACTORY_BUILD_URL
+
+      - name: Release
+        if: ${{env.RELEASE == 'true'}}
+        run: |
+          CURR_VERSION=`./gradlew properties -q -Partifactory_build_url=$ARTIFACTORY_BUILD_URL | grep "build_version" | awk '{print $2}'`
+          sed -i -e "s/build_version=$CURR_VERSION/build_version=$VERSION/g" gradle.properties
+          
+          ./gradlew publish -Partifactory_build_url=$ARTIFACTORY_BUILD_URL -Partifactory_publish_url=$ARTIFACTORY_PUBLISH_URL
+
+      - name: Tag
+        if: ${{env.TAG == 'true'}}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ env.TAG_PREFIX }}/${{ env.VERSION }}',
+              sha: context.sha
+            })
+
+      - name: Generate Javadoc
+        if: ${{env.DEPLOY_DOCS == 'true'}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew javadoc
+
+      - name: Upload docs artifact
+        if: ${{env.DEPLOY_DOCS == 'true'}}
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ${{ env.DOCS_PATH }}
+          retention-days: 1
+
+      - name: Deploy docs pages
+        if: ${{env.DEPLOY_DOCS == 'true'}}
+        uses: actions/deploy-pages@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
