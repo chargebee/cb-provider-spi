@@ -21,8 +21,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
 }
 
 def loadSpecConfig() {
@@ -63,6 +63,16 @@ def openApiTask() {
             id.set(spec.projectName)
             version.set(project.version)
             configFile.set("$rootDir/spec/spi/config.yml")
+
+            doLast {
+                def generatedApiDir = "$rootDir/generated/$spec.name/api"
+                def targetApiDir = "$rootDir/spec/spi/generated/$spec.name/api"
+                copy {
+                    from generatedApiDir
+                    into targetApiDir
+                    include '**/*.yaml'
+                }
+            }
         }
 
         validateSpec.dependsOn(validateTaskName)
@@ -83,27 +93,63 @@ tasks.openApiValidate.configure {
     actions.clear()
     dependsOn(validateSpec)
 }
-
 publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java // Include the compiled Java artifacts
+        }
+    }
     repositories {
         maven {
-            url artifactory_publish_url
-            credentials {
-                username System.env.CODEARTIFACT_USER
-                password System.env.CODEARTIFACT_AUTH_TOKEN
+            name = "LocalMaven"
+            url = uri("${System.getProperty("user.home")}/.m2/repository") // Local Maven repository
+        }
+    }
+    /*
+     publications {
+        mavenJava(MavenPublication) {
+            from components.java // Publish Java components (compiled classes and resources)
+
+            // Add additional details (optional but recommended)
+            pom {
+                name.set("Your Project Name")
+                description.set("Description of your project.")
+                url.set("https://your-org-repo-url.com") // Replace with your org's repo or project URL
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0") // Replace with your license
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("your-id")
+                        name.set("Your Name")
+                        email.set("your-email@your-org.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/your-org/your-repo.git")
+                    developerConnection.set("scm:git:ssh://git@github.com:your-org/your-repo.git")
+                    url.set("https://github.com/your-org/your-repo")
+                }
             }
         }
     }
-    publications {
-        mavenJava(MavenPublication) {
-            groupId = project.group
-            artifactId = rootProject.name
-            version = project.version
-            from components.java
+
+    repositories {
+        maven {
+            name = "YourPublicRepo" // Replace with your repo name
+            url = uri("https://maven.your-org.com/repository/public") // Replace with your public Maven repo URL
+            credentials {
+                username = project.findProperty("repoUser") ?: System.getenv("REPO_USER") // Securely provide username
+                password = project.findProperty("repoPassword") ?: System.getenv("REPO_PASSWORD") // Securely provide password
+            }
         }
     }
+    */
 }
-
 //As of now we have to keep following dependencies to generate build with generated sources
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
@@ -113,7 +159,7 @@ dependencies {
     implementation 'io.gsonfire:gson-fire:1.8.5'
     implementation 'javax.ws.rs:jsr311-api:1.1.1'
     implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
     implementation 'jakarta.annotation:jakarta.annotation-api:1.3.5'
     testImplementation 'org.mockito:mockito-core:5.6.0'
