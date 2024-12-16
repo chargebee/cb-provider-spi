@@ -6,6 +6,7 @@ plugins {
     id "idea"
     id "java"
     id 'maven-publish'
+    id 'signing'
     id "org.openapi.generator" version "7.0.1"
 }
 
@@ -21,8 +22,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
 }
 
 def loadSpecConfig() {
@@ -93,46 +94,34 @@ tasks.openApiValidate.configure {
     actions.clear()
     dependsOn(validateSpec)
 }
+
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java // Include the compiled Java artifacts
-        }
-    }
-    repositories {
-        maven {
-            name = "LocalMaven"
-            url = uri("${System.getProperty("user.home")}/.m2/repository") // Local Maven repository
-        }
-    }
-    /*
-     publications {
-        mavenJava(MavenPublication) {
-            from components.java // Publish Java components (compiled classes and resources)
-
-            // Add additional details (optional but recommended)
             pom {
-                name.set("Your Project Name")
-                description.set("Description of your project.")
-                url.set("https://your-org-repo-url.com") // Replace with your org's repo or project URL
+                name.set("Mavenpublish")
+                description.set("Publishing Jar to remote maven")
+                url.set("https://github.com/cb-shishiryadav/Mavenpublish") // Replace with your org's repo or project URL
 
                 licenses {
                     license {
-                        name.set("The Apache License, Version 2.0") // Replace with your license
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        name.set("MIT License")
+                        url.set("https://opensource.org/licenses/MIT")
                     }
                 }
                 developers {
                     developer {
-                        id.set("your-id")
-                        name.set("Your Name")
-                        email.set("your-email@your-org.com")
+                        id.set("cb-shishiryadav")
+                        name.set("Shishir")
+                        email.set("shishir.yadav@chargebee.com")
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/your-org/your-repo.git")
-                    developerConnection.set("scm:git:ssh://git@github.com:your-org/your-repo.git")
-                    url.set("https://github.com/your-org/your-repo")
+                    connection.set("scm:git:https://github.com/cb-shishiryadav/Mavenpublish.git")
+                    developerConnection.set("scm:git:ssh://github.com/cb-shishiryadav/Mavenpublish.git")
+                    url.set("https://github.com/cb-shishiryadav/Mavenpublish")
                 }
             }
         }
@@ -140,16 +129,29 @@ publishing {
 
     repositories {
         maven {
-            name = "YourPublicRepo" // Replace with your repo name
-            url = uri("https://maven.your-org.com/repository/public") // Replace with your public Maven repo URL
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/cb-shishiryadav/Mavenpublish")
+
             credentials {
-                username = project.findProperty("repoUser") ?: System.getenv("REPO_USER") // Securely provide username
-                password = project.findProperty("repoPassword") ?: System.getenv("REPO_PASSWORD") // Securely provide password
+                username = project.findProperty("githubUsername") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("githubToken") ?: System.getenv("GITHUB_TOKEN")
             }
         }
     }
-    */
 }
+
+
+signing {
+    useGpgCmd()  // Tells Gradle to use GPG to sign artifacts
+    if (project.hasProperty('signing.keyId')) {
+        useGpgCmd()
+    }
+}
+
+tasks.withType(Sign) {
+    onlyIf { project.hasProperty('signing.keyId') }  // Ensure that signing is done only when keys are provided
+}
+
 //As of now we have to keep following dependencies to generate build with generated sources
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
