@@ -7,6 +7,7 @@ plugins {
     id "java"
     id 'maven-publish'
     id "org.openapi.generator" version "7.0.1"
+    id 'net.researchgate.release' version '3.0.2'
 }
 
 group build_group
@@ -21,9 +22,11 @@ repositories {
 }
 
 java {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
+    sourceCompatibility = "8"
+    targetCompatibility = "8"
 }
+
+
 
 def loadSpecConfig() {
     def configJson = "[" + file('spec.config').text + "]"
@@ -84,25 +87,41 @@ tasks.openApiValidate.configure {
     dependsOn(validateSpec)
 }
 
+release {
+    // Configure release parameters
+    failOnSnapshotDependencies = true
+
+    // Custom tasks before release
+    preTagCommitMessage = 'Pre tag commit: '
+    tagCommitMessage = 'Creating tag: '
+    newVersionCommitMessage = 'New version commit: '
+}
+
 publishing {
     repositories {
         maven {
-            url artifactory_publish_url
-            credentials {
-                username System.env.CODEARTIFACT_USER
-                password System.env.CODEARTIFACT_AUTH_TOKEN
-            }
+            url = uri("${project.rootDir}/local-maven-repo")
         }
     }
     publications {
         mavenJava(MavenPublication) {
-            groupId = project.group
-            artifactId = rootProject.name
-            version = project.version
             from components.java
         }
     }
 }
+
+tasks.register("releaseClean") {
+    doLast {
+        // Clean up release-related files
+        delete(fileTree(project.rootDir) {
+            include("release.properties", "gradle.properties.backup")
+        })
+    }
+}
+
+// Ensure publish task runs after release
+afterReleaseBuild.dependsOn(tasks.publish)
+
 
 //As of now we have to keep following dependencies to generate build with generated sources
 dependencies {
@@ -119,4 +138,9 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:5.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+
+    // Add equivalent dependencies from POM
+    implementation 'org.json:json:20231013'
+    implementation 'commons-codec:commons-codec:1.16.0'
+
 }
