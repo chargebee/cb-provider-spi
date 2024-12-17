@@ -1,36 +1,66 @@
-name: Publish to Public Maven
+name: CI Workflow
 
 on:
+  pull_request:
+    types: [closed]
+    branches:
+      - "dev"
+      - "main"
   push:
     branches:
-      - main # Trigger on pushes to the main branch
+      - 'release/*'
 
 jobs:
-  publish:
-    name: Publish JAR to Maven
+  build:
+    name: Publish JAR to Maven  ${{ secrets.JAVA_VERSION }}
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [ 8, 11, 17 ]  
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Set up JDK
+      - name: Set up Amazon Corretto JDK ${{ matrix.jdk }}
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '17' # Use the appropriate version
+          java-version: ${{ matrix.jdk }}
+          distribution: 'corretto'
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
 
-      - name: Build and Publish
+      # Set up environment variables for signing and Maven credentials
+      - name: Set up signing and Maven credentials
+        run: |
+          echo "$SIGNING_KEY" | base64 -d > secret.gpg
+          echo "$SIGNING_KEYID" > signing.keyId
+          echo "$SIGNING_PASSWORD" | base64 -d > signing.password
+          echo "$MAVEN_USERNAME" > maven.username
+          echo "$MAVEN_PASSWORD" | base64 -d > maven.password
         env:
-          REPO_USER: ${{ secrets.REPO_USER }}
-          REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEYID: ${{ secrets.SIGNING_KEYID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+
+      # Set up Gradle properties for signing and Maven credentials
+      - name: Set up Gradle local.properties
+        run: |
+          echo "signing.keyId=$(cat signing.keyId)" > local.properties
+          echo "signing.password=$(cat signing.password)" >> local.properties
+          echo "signing.secretKeyRingFile=secret.gpg" >> local.properties
+          echo "maven_username=$(cat maven.username)" >> local.properties
+          echo "maven_password=$(cat maven.password)" >> local.properties
+
+      # Run Gradle build (clean, build, and publish)
+      - name: Run Gradle build and publish
         run: |
           ./gradlew clean build publish
+
+      # Clean up sensitive files
+      - name: Clean up
+        run: |
+          rm -f secret.gpg signing.keyId signing.password maven.username maven.password
+
+    
