@@ -133,7 +133,7 @@ publishing {
             pom {
                 name.set("Mavenpublish")
                 description.set("Publishing Jar to remote Maven repository")
-                url.set("https://github.com/chargebee/cb-provider-spi") // Replace with your org's repo or project URL
+                url.set("https://github.com/chargebee/cb-provider-spi") 
 
                 licenses {
                     license {
@@ -172,7 +172,7 @@ publishing {
     }
 }
 
-// Simplified Signing Configuration
+
 signing {
     sign publishing.publications // Sign the publications
 }
