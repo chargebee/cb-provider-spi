@@ -63,7 +63,7 @@ def openApiTask() {
 
             doLast {
                 def generatedApiDir = "$rootDir/generated/$spec.name/api"
-                def targetApiDir = "$rootDir/spec/spi/generated/$spec.name/api"
+                def targetApiDir = "$rootDir/spec/spi/generated"
                 copy {
                     from generatedApiDir
                     into targetApiDir
@@ -145,6 +145,16 @@ publishing {
                         id.set("cb-ashokmor")
                         name.set("Ashokmor")
                         email.set("ashok.mor@chargebee.com")
+                    }
+                    developer {
+                        id.set("cb-suryak")
+                        name.set("Surya Kannapiran")
+                        email.set("surya.kannapiran@chargebee.com")
+                    }
+                    developer {
+                        id.set("cb-shishiryadav")
+                        name.set("Shishir Yadav")
+                        email.set("shishir.yadav@chargebee.com")
                     }
                 }
                 scm {
