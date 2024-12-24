@@ -124,6 +124,9 @@ if (secretPropsFile.exists()) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId = project.group
+            artifactId = rootProject.name
+            version = project.version
             from components.java  // Publish the compiled Java artifact
 
             // Include the sources JAR
