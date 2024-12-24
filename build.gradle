@@ -100,7 +100,6 @@ task sourcesJar(type: Jar) {
 // Signing keys and credentials (these can be defined in `local.properties` or via environment variables)
 ext["signing.keyId"] = ''
 ext["signing.password"] = ''
-ext["signing.secretKeyRingFile"] = ''
 ext["maven_username"] = ''
 ext["maven_password"] = ''
 
@@ -174,12 +173,11 @@ publishing {
 
 
 signing {
-    sign publishing.publications // Sign the publications
+    useGpgCmd()
+    useGpgKey("SIGNING_KEY_ID", "SIGNING_PASSWORD")  // GPG key ID and passphrase
+    sign publishing.publications.mavenJava
 }
 
-tasks.withType(Sign) {
-    onlyIf { project.hasProperty('signing.keyId') }  // Ensure that signing is done only when keys are provided
-}
 
 // As of now, we have to keep following dependencies to generate builds with generated sources
 dependencies {
