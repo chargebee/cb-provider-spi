@@ -101,7 +101,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"batchName\": \"first\",\n    \"tinValidationRequests\": [ \n        {\n            \"tin\": \"123\",\n            \"country\": {\n                \"code\": \"FR\"\n            }\n        },\n        {\n            \"tin\": \"124\",\n            \"country\": {\n                \"code\": \"FR\"\n            }\n        }\n    ]\n}"
+					"raw": "{\n    \"batchName\": \"first\",\n    \"trnValidationRequests\": [ \n        {\n            \"trn\": \"123\",\n            \"country\": {\n                \"code\": \"FR\"\n            }\n        },\n        {\n            \"trn\": \"124\",\n            \"country\": {\n                \"code\": \"FR\"\n            }\n        }\n    ]\n}"
 				},
 				"url": {
 					"raw": "{{host}}/trn/taxamo/v1/trn/validate/batch",
