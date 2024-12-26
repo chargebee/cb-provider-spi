@@ -57,15 +57,24 @@ If no build issue, and if jar is successfully created, go to **./build/libs/cb-p
 
 ## Getting Started
 
-Please follow the installation instruction of generated readme to generate the jar of this project. Currently, this jar is used as a dependency in chargebee-app too to use APIs as well as models.
+This jar can be added as a dependency in your Java application to use APIs as well as models. 
+ 
+Adding the Dependency
 
-Add dependency
+- For Maven
+
 ```maven
 <dependency>
-    <groupId>org.chargebee.spi</groupId>
-    <artifactId>cb-provider-spi</artifactId>
+    <groupId>com.chargebee</groupId>
+    <artifactId>cb-partner-spis</artifactId>
     <version>${version}</version>
 </dependency>
+```
+
+- For Gradle
+
+```gradle
+implementation 'com.chargebee:cb-partner-spis:${version}'
 ```
 
 Following sample Java code demonstrates how to use the APIs and models from this project:
