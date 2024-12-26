@@ -1,14 +1,14 @@
 {
 	"info": {
 		"_postman_id": "e6b3be35-036f-418f-aae4-755da0941ede",
-		"name": "Tax Adapter - TRN Validate API",
+		"name": "Tax Adapter - Tax Registration Number Validate API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20298222",
 		"_collection_link": "https://universal-meadow-737083.postman.co/workspace/CB---Ashok-Test-Site~e9c144f8-0d3b-4b28-ad69-688594a58079/collection/20298222-e6b3be35-036f-418f-aae4-755da0941ede?action=share&source=collection_link&creator=20298222"
 	},
 	"item": [
 		{
-			"name": "Tin Validate",
+			"name": "Tax Registration Number Validate",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -67,7 +67,7 @@
 			"response": []
 		},
 		{
-			"name": "Trn Validate Status",
+			"name": "Tax Registration Number Validate Status",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -89,7 +89,7 @@
 			"response": []
 		},
 		{
-			"name": "Trn Batch Validate",
+			"name": "Tax Registration Number Batch Validate",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -121,7 +121,7 @@
 			"response": []
 		},
 		{
-			"name": "Trn Batch Validate Status",
+			"name": "Tax Registration Number Batch Validate Status",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -154,7 +154,7 @@
 			"response": []
 		},
 		{
-			"name": "Trn Batch Validate Delete",
+			"name": "Tax Registration Number Batch Validate Delete",
 			"request": {
 				"method": "DELETE",
 				"header": [
@@ -262,7 +262,7 @@
 			"response": []
 		},
 		{
-			"name": "Tin Validate - Predev",
+			"name": "Tax Registration Number Validate - Predev",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -315,7 +315,7 @@
 			"response": []
 		},
 		{
-			"name": "Tin Validate - taxId",
+			"name": "Tax Registration Number Validate - taxId",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -364,7 +364,7 @@
 			"response": []
 		},
 		{
-			"name": "Tin Validate - Dev - Taxamo",
+			"name": "Tax Registration Number Validate - Dev - Taxamo",
 			"event": [
 				{
 					"listen": "prerequest",
