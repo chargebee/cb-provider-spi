@@ -134,7 +134,7 @@ publishing {
             pom {
                 name.set("Mavenpublish")
                 description.set("Publishing Jar to remote Maven repository")
-                url.set("https://github.com/chargebee/cb-partner-spis") 
+                url.set("https://github.com/chargebee/cb-partner-spis")
 
                 licenses {
                     license {
