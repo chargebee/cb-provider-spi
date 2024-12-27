@@ -80,8 +80,8 @@ public class Example {
 ```
 
 ## JSON Schema validation
-The capabilities of the built apps will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced below.
-- [TaxProviderCapabilities JSONSchema](spec/capabilities/tax-provider.schema.json)
+The capabilities of the built apps will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced [here](spec/capabilities/tax-provider.schema.json).
+
 
 Run the below script to perform json schema validation:
 ```shell
