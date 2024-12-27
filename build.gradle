@@ -134,7 +134,7 @@ publishing {
             pom {
                 name.set("Mavenpublish")
                 description.set("Publishing Jar to remote Maven repository")
-                url.set("https://github.com/chargebee/cb-provider-spi") 
+                url.set("https://github.com/chargebee/cb-partner-spis") 
 
                 licenses {
                     license {
@@ -160,9 +160,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:github.com/chargebee/cb-provider-spi.git")
-                    developerConnection.set("scm:git:ssh://github.com/chargebee/cb-provider-spi.git")
-                    url.set("https://github.com/chargebee/cb-provider-spi")
+                    connection.set("scm:git:github.com/chargebee/cb-partner-spis.git")
+                    developerConnection.set("scm:git:ssh://github.com/chargebee/cb-partner-spis.git")
+                    url.set("https://github.com/chargebee/cb-partner-spis")
                 }
             }
         }
@@ -200,7 +200,7 @@ dependencies {
     implementation 'io.gsonfire:gson-fire:1.8.5'
     implementation 'javax.ws.rs:jsr311-api:1.1.1'
     implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
-    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
     implementation 'jakarta.annotation:jakarta.annotation-api:1.3.5'
     testImplementation 'org.mockito:mockito-core:5.6.0'
