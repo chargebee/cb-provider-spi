@@ -1,4 +1,4 @@
-## Updating & Using Postman Collection (TO BE ADDED)
+## Updating & Using Postman Collection
 
 - Postman test suites comprising test cases for each SPI endpoint is available in the `postman/<capability_name>` directory.  
   **Example:** `postman/tax`.

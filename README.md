@@ -99,3 +99,4 @@ Example:
 - [Update Mintlify Files](docs/mintlify-files.md)
 - [Postman Collection](docs/postman-collection.md)
 - [Release](docs/release.md)
+- [Guidlines](docs/guidelines.md)
