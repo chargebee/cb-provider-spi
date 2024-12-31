@@ -53,4 +53,4 @@
 - The generated SPI jar will be located in the `./build/libs/` directory.
 
 #### 5. Update postman collection
-- Refer to the [Updating & Using Postman Collection (TO BE ADDED)](../README.md#updating--using-postman-collection-to-be-added) section to follow the steps to update the Postman collection.
+- Refer to the [Updating & Using Postman Collection](./postman-collection.md) section to follow the steps to update the Postman collection.

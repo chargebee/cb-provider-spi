@@ -26,6 +26,23 @@ java {
     targetCompatibility = "17"
 }
 
+// Pre-commit hook installation task
+task runPreCommitCommand {
+    doLast {
+        def environment = project.hasProperty('env') ? project.env : 'local'
+        if (environment != "local") {
+            println "runPreCommitCommand: Skipping pre-commit install"
+        } else {
+            println "runPreCommitCommand: Executing pre-commit install"
+            exec {
+                commandLine 'sh', '-c', 'pre-commit install'
+            }
+        }
+    }
+}
+
+build.dependsOn runPreCommitCommand
+
 def loadSpecConfig() {
     def configJson = "[" + file('spec.config').text + "]"
     def config = new JsonSlurper().parseText(configJson)
