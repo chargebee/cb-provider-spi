@@ -151,7 +151,7 @@ publishing {
             pom {
                 name.set("Mavenpublish")
                 description.set("Publishing Jar to remote Maven repository")
-                url.set("https://github.com/chargebee/cb-partner-spis")
+                url.set("https://github.com/chargebee/cb-partner-spi")
 
                 licenses {
                     license {
@@ -177,9 +177,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:github.com/chargebee/cb-partner-spis.git")
-                    developerConnection.set("scm:git:ssh://github.com/chargebee/cb-partner-spis.git")
-                    url.set("https://github.com/chargebee/cb-partner-spis")
+                    connection.set("scm:git:github.com/chargebee/cb-partner-spi.git")
+                    developerConnection.set("scm:git:ssh://github.com/chargebee/cb-partner-spi.git")
+                    url.set("https://github.com/chargebee/cb-partner-spi")
                 }
             }
         }

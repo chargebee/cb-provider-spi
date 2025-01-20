@@ -7,8 +7,8 @@ Chargebee Partners can leverage these SPIs to develop apps that seamlessly integ
 ## What are the available Chargebee Partner SPIs? 
 Currently, Chargebee offer SPIs for the following capabilities:
 
-- [Tax](https://chargebee.mintlify.app/api-reference/v2/docs/Overview) <!-- should we have a better name for this? -->
-- [Tax Registration Number Validation](https://chargebee.mintlify.app/api-reference/v2/docs/Overview)
+- [Tax](https://spidocs.chargebee.com/api-reference/partner-spis/overview) <!-- should we have a better name for this? -->
+- [Tax Registration Number Validation](https://spidocs.chargebee.com/api-reference/partner-spis/overview)
 
 These SPIs allow partners to build custom apps by implementing the SPI-defined endpoints. The detailed OpenAPI specifications for these SPIs can be found in the spec/spi folder of the repository:
 
