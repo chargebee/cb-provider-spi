@@ -1,16 +1,16 @@
-## What is Partner SPIs?
-Chargebee supports a wide range of third-party integrations to deliver enhanced functionalities to its customers. To facilitate this, Chargebee provides Service Provider Interfaces (SPIs), defined in the OpenAPI specification, for various capabilities.
+## What is Partner SPI?
+Chargebee supports a wide range of third-party integrations to deliver enhanced functionalities to its customers. To facilitate this, Chargebee provides Service Provider Interfaces (SPI), defined in the OpenAPI specification, for various capabilities.
 
-Chargebee Partners can leverage these SPIs to develop apps that seamlessly integrate with Chargebee, extending its core capabilities to meet diverse business needs.
+Chargebee Partners can leverage this SPI to develop apps that seamlessly integrate with Chargebee, extending its core capabilities to meet diverse business needs.
 
 
-## What are the available Chargebee Partner SPIs? 
-Currently, Chargebee offer SPIs for the following capabilities:
+## What are the available Chargebee Partner SPI? 
+Currently, Chargebee offer SPI for the following capabilities:
 
-- [Tax](https://spidocs.chargebee.com/api-reference/partner-spis/overview) <!-- should we have a better name for this? -->
-- [Tax Registration Number Validation](https://spidocs.chargebee.com/api-reference/partner-spis/overview)
+- [Tax](https://spidocs.chargebee.com/api-reference/partner-spi/overview) <!-- should we have a better name for this? -->
+- [Tax Registration Number Validation](https://spidocs.chargebee.com/api-reference/partner-spi/overview)
 
-These SPIs allow partners to build custom apps by implementing the SPI-defined endpoints. The detailed OpenAPI specifications for these SPIs can be found in the spec/spi folder of the repository:
+SPI allow partners to build custom apps by implementing the SPI-defined endpoints. The detailed OpenAPI specifications for this SPI can be found in the spec/spi folder of the repository:
 
 - [Tax SPI](./spec/spi/openapi_tax.yml) 
 - [Tax Registration Number Validation SPI](./spec/spi/openapi_trn.yml)
@@ -24,7 +24,7 @@ This jar can be added as a dependency in your Java application to use APIs as we
 ```maven
 <dependency>
     <groupId>com.chargebee</groupId>
-    <artifactId>cb-partner-spis</artifactId>
+    <artifactId>cb-partner-spi</artifactId>
     <version>${version}</version>
 </dependency>
 ```
@@ -32,7 +32,7 @@ This jar can be added as a dependency in your Java application to use APIs as we
 ### Gradle
 
 ```gradle
-implementation 'com.chargebee:cb-partner-spis:${version}'
+implementation 'com.chargebee:cb-partner-spi:${version}'
 ```
 
 Following sample Java code demonstrates how to use the APIs and models from this project:
