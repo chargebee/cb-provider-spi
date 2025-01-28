@@ -82,6 +82,9 @@ paths:
       summary: Estimate tax
       description: "This endpoint is used to estimate taxes for a set of line items being sold by the Merchant to a Customer."
       operationId: estimateTaxes
+      parameters:
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       requestBody:
         content:
           application/json:
@@ -135,6 +138,9 @@ paths:
       summary: Create Invoice
       description: "This endpoint is used to send an invoice to the Tax Service Provider. Invoices created in Chargebee are statements of amounts owed by the Customer to the Merchant for a specific purchase."
       operationId: createInvoice
+      parameters:
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       requestBody:
         content:
           application/json:
@@ -180,6 +186,8 @@ paths:
       operationId: fetchInvoice
       parameters:
         - $ref: '#/components/parameters/InvoiceIdPathParam'
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       responses:
         '200':
           description: "Invoice retrieved successfully."
@@ -208,6 +216,8 @@ paths:
       operationId: commitInvoice
       parameters:
         - $ref: '#/components/parameters/InvoiceIdPathParam'
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       responses:
         '204':
           description: "Invoice committed successfully."
@@ -232,6 +242,16 @@ paths:
       operationId: voidInvoice
       parameters:
         - $ref: '#/components/parameters/InvoiceIdPathParam'
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoidRequest'
+            examples:
+              VoidInvoiceRequest:
+                $ref: '#/components/examples/VoidInvoiceRequest'
       responses:
         '204':
           description: Invoice voided successfully.
@@ -254,6 +274,9 @@ paths:
       summary: "Create credit note"
       description: "This endpoint is used to send a credit note to the Tax Service Adapter. A credit note is used to reduce the amount due on an invoice. If the credit note is issued after payments have been made for the invoice, refunds can be issued to the Customer."
       operationId: createCreditNote
+      parameters:
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       requestBody:
         content:
           application/json:
@@ -298,6 +321,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/CreditNoteIdPathParam'
         - $ref: '#/components/parameters/InvoiceIdQueryParam'
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       responses:
         '200':
           description: "Credit note retrieved successfully."
@@ -327,6 +352,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/CreditNoteIdPathParam'
         - $ref: '#/components/parameters/InvoiceIdQueryParam'
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       responses:
         '204':
           description: Credit note committed successfully.
@@ -352,6 +379,16 @@ paths:
       parameters:
         - $ref: '#/components/parameters/CreditNoteIdPathParam'
         - $ref: '#/components/parameters/InvoiceIdQueryParam'
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoidRequest'
+            examples:
+              VoidInvoiceRequest:
+                $ref: '#/components/examples/VoidInvoiceRequest'
       responses:
         '204':
           description: "Credit note voided successfully."
@@ -374,6 +411,9 @@ paths:
       operationId: validateAddress
       tags:
         - Address
+      parameters:
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       requestBody:
         content:
           application/json:
@@ -424,6 +464,9 @@ paths:
       operationId: checkAddressTaxability
       tags:
         - Address
+      parameters:
+        - $ref: './schemas/headers.yml#/components/parameters/MerchantId'
+        - $ref: './schemas/headers.yml#/components/parameters/TraceId'
       requestBody:
         content:
           application/json:
@@ -484,6 +527,9 @@ paths:
         '503':
           $ref: './schemas/errors.yml#/components/responses/Error503'
 components:
+  securitySchemes:
+    Authorization:
+      $ref: './schemas/headers.yml#/components/securitySchemes/Authorization'
   schemas:
     TaxEstimationRequest:
       type: object
@@ -1253,6 +1299,14 @@ components:
           type: string
           description: The country of the address following the ISO 3166-1 alpha-2 standard.
           maxLength: 2
+    VoidRequest:
+      type: object
+      description: The request to void an invoice or credit note.
+      properties:
+        documentDateTime:
+          type: string
+          description: "The date and time at which the credit note was created in Chargebee. For example, if the value is 2022-10-28T15:36:28.129+05:30, then the timestamp represents October 28, 2022, at 15:36:28.129, with an offset of +05:30. This means that the time represented is 5 hours and 30 minutes ahead of UTC/GMT. In the case of a merchant site located in UTC, these data types would send a timestamp in the format 2022-11-11T15:40:44.65Z. This timestamp represents November 11, 2022, at 15:40:44.65, with the 'Z' indicating that the time is in UTC."
+          format: date-time
     CustomerLocationEvidence:
       type: object
       description: Represent the properties for customer location evidence.
@@ -2467,6 +2521,10 @@ components:
       description: Unexpected error during processing the request.
       value:
         message: Unexpected error during processing the request.
+    VoidInvoiceRequest:
+      description: A request to void an invoice in the tax provider system.
+      value:
+        documentDateTime: '2022-11-01T10:42:08.131+05:30'
     AddressValidationValidRequest:
       summary: Valid address request for full address verification
       description: Valid address request
@@ -2617,15 +2675,5 @@ components:
         code: INVALID_REQUEST
         message: Invalid Merchant id.
         detail: Please provide a valid merchant id.
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-    apiKey:
-      type: apiKey
-      description: Bearer token based authentication.
-      name: bearer
-      in: header
 security:
-  - bearerAuth: []
-  - apiKey: [] 
+  - Authorization: []
