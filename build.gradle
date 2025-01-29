@@ -24,6 +24,8 @@ repositories {
 java {
     sourceCompatibility = "17"
     targetCompatibility = "17"
+    withJavadocJar()  // Enable Javadoc generation
+    withSourcesJar()  // Enable Sources generation
 }
 
 // Pre-commit hook installation task
@@ -108,10 +110,11 @@ tasks.openApiValidate.configure {
     dependsOn(validateSpec)
 }
 
-// Task to generate sources JAR (this will create a sources.jar for the source code)
-task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from sourceSets.main.allJava
+// Configure Javadoc
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
 }
 
 // Signing keys and credentials (these can be defined in `local.properties` or via environment variables)
@@ -144,9 +147,6 @@ publishing {
             artifactId = rootProject.name
             version = project.version
             from components.java  // Publish the compiled Java artifact
-
-            // Include the sources JAR
-            artifact sourcesJar
 
             pom {
                 name.set("Mavenpublish")
@@ -200,7 +200,6 @@ publishing {
     }
 }
 
-
 signing {
     useInMemoryPgpKeys(
             findProperty("SIGNING_KEY") ?: System.getenv("SIGNING_KEY"),
@@ -209,8 +208,7 @@ signing {
     sign publishing.publications.mavenJava
 }
 
-
-// As of now, we have to keep following dependencies to generate builds with generated sources
+// Dependencies
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
