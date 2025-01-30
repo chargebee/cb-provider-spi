@@ -153,8 +153,8 @@ publishing {
             from components.java  // Publish the compiled Java artifact
 
             pom {
-                name.set("Mavenpublish")
-                description.set("Publishing Jar to remote Maven repository")
+                name.set("CB Partner SPI")
+                description.set("Service Provider Interface (SPI) library for integrating partner solutions with Chargebee")
                 url.set("https://github.com/chargebee/cb-partner-spi")
 
                 licenses {
