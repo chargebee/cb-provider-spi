@@ -149,8 +149,8 @@ publishing {
             artifact sourcesJar
 
             pom {
-                name.set("Mavenpublish")
-                description.set("Publishing Jar to remote Maven repository")
+                name.set("Partner SPI")
+                description.set("Service Provider Interface (SPI) library for integrating partner solutions with Chargebee")
                 url.set("https://github.com/chargebee/cb-partner-spi")
 
                 licenses {
