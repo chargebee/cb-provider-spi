@@ -149,7 +149,7 @@ publishing {
             artifact sourcesJar
 
             pom {
-                name.set("Partner SPI")
+                name.set("CB Partner SPI")
                 description.set("Service Provider Interface (SPI) library for integrating partner solutions with Chargebee")
                 url.set("https://github.com/chargebee/cb-partner-spi")
 
