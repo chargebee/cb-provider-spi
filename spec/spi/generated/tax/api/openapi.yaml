@@ -2635,7 +2635,7 @@ components:
         itemCode:
           description: "The unique identifier (in Chargebee) of the product corresponding\
             \ to the line item. If the line item corresponds to a one-off charge,\
-            \ then this identifier is not provided."
+            \ then this identifier is not provided.If an invoice contains a line item with an `adhoc` entity_type, it corresponds to an `itemCode` of `adhoc_charge`."
           maxLength: 50
           type: string
         description:
@@ -3254,7 +3254,7 @@ components:
         itemCode:
           description: "The unique identifier (in Chargebee) of the product corresponding\
             \ to the line item. If the line item corresponds to a one-off charge,\
-            \ then this identifier is not present."
+            \ then this identifier is not present.If an invoice contains a line item with an `adhoc` entity_type, it corresponds to an `itemCode` of `adhoc_charge`."
           maxLength: 50
           type: string
         description:

@@ -15,6 +15,10 @@ SPI allow partners to build custom apps by implementing the SPI-defined endpoint
 - [Tax SPI](./spec/spi/openapi_tax.yml) 
 - [Tax Registration Number Validation SPI](./spec/spi/openapi_trn.yml)
 
+## Integrate your App with Chargebee
+
+After building your app you can integrate it with Chargebee by following the App Onboarding process from [here](https://spidocs.chargebee.com/app-onboarding/guide).
+
 ## Getting Started
 
 This jar can be added as a dependency in your Java application to use APIs as well as models.
