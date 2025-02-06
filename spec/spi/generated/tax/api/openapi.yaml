@@ -69,7 +69,7 @@ tags:
 paths:
   /health:
     get:
-      description: This endpoint is used to fetch the health status of the Service and is mandatory to integrate for the tax provider.
+      description: This endpoint is used to fetch the health status of the Service
         Provider.
       operationId: fetchHealth
       responses:
