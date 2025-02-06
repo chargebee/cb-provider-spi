@@ -25,7 +25,7 @@ After building your app you can integrate it with Chargebee by following the App
 
 - Java 17
   
-If you are building your application with java, you can use any active version of library as dependency in your Maven or Gradle project.
+If you are building your application with java, you can use any active library version as dependency in your Maven or Gradle project.
 
 ### Maven
 
