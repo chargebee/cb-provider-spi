@@ -21,7 +21,11 @@ After building your app you can integrate it with Chargebee by following the App
 
 ## Getting Started
 
-This jar can be added as a dependency in your Java application to use APIs as well as models.
+### Requirement
+
+- Java 17
+  
+If you are building your application with java, you can use any active version of library as dependency in your Maven or Gradle project.
 
 ### Maven
 
@@ -103,4 +107,4 @@ Example:
 - [Update Mintlify Files](docs/mintlify-files.md)
 - [Postman Collection](docs/postman-collection.md)
 - [Release](docs/release.md)
-- [Guidlines](docs/guidelines.md)
+- [Guidelines](docs/guidelines.md)
