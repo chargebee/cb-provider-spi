@@ -112,7 +112,6 @@ tasks.openApiValidate.configure {
 task sourcesJar(type: Jar) {
     archiveClassifier.set('sources')
     from sourceSets.main.allJava
-    dependsOn classes
 }
 
 // Configure Javadoc
@@ -152,8 +151,6 @@ publishing {
             artifactId = rootProject.name
             version = project.version
             from components.java  // Publish the compiled Java artifact
-
-            artifact sourcesJar
 
             pom {
                 name.set("CB Partner SPI")
