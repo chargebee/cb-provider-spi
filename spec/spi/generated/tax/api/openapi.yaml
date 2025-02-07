@@ -70,7 +70,7 @@ paths:
   /health:
     get:
       description: This endpoint is used to fetch the health status of the Service
-        Provider.
+        Provider and is mandatory to integrate for the tax provider.
       operationId: fetchHealth
       responses:
         "200":
