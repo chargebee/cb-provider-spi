@@ -1,7 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Chargebee Partner docs",
-  "styles": ["style.css"],  
+  "name": "Chargebee Partner docs",  
   "api": {
     "request": {
       "example": {
