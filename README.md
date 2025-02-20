@@ -1,71 +1,46 @@
-## Chargebee's Open API Spec
-Service Provider Interfaces for Chargebee's capabilities
-- [Open api tax_spec](spec/spi/openapi_tax.yml)
-- [Open api trn_validation_spec](spec/spi/openapi_trn.yml)
-- To view open api spec visit https://editor.swagger.io/ and place generated yaml content
+## What is Partner SPI?
+Chargebee supports a wide range of third-party integrations to deliver enhanced functionalities to its customers. To facilitate this, Chargebee provides Service Provider Interfaces (SPI), defined in the OpenAPI specification, for various capabilities.
 
-## Add new open api spec
-- Add **openapi.yml** file under `spec/spi/` folder, like spec/spi/**abc**
-- Add config details in [spec.config](spec.config) file
-- Command to validate open api spec `sh gradlew validateSpec_abc --warning-mode all --stacktrace`
-- Command to generate open api spec `sh gradlew generateSpec_abc --warning-mode all --stacktrace`
-- Java models, clients and doc will be generated under `generated/abc` folder
-- 
+Chargebee Partners can leverage this SPI to develop apps that seamlessly integrate with Chargebee, extending its core capabilities to meet diverse business needs.
 
-## Commands
-- Validate the open api spec `sh gradlew validateSpec --warning-mode all --stacktrace`
-- Generate models, api client, docs etc `sh gradlew generateSpec --warning-mode all --stacktrace`
-    - New folder `generated` will be created which will have all models, clients, docs etc
-- Build `sh gradlew build` spi jar will be generated to ./build/libs/cb-provider-spi.jar
-- Publish jar to local maven repo `sh gradlew build publishToMavenLocal`
 
-## Working on Service Adapter SPI for first time
+## What are the available Chargebee Partner SPI? 
+Currently, Chargebee offer SPI for the following capabilities:
 
-Follow the below steps for generating jar
+- [Tax](https://spidocs.chargebee.com/api-reference/partner-spi/overview) <!-- should we have a better name for this? -->
+- [Tax Registration Number Validation](https://spidocs.chargebee.com/api-reference/partner-spi/overview)
 
-Clone repository in local
-```shell
-  git clone git@github.com:chargebee/cb-provider-spi.git
-```
+SPI allow partners to build custom apps by implementing the SPI-defined endpoints. The detailed OpenAPI specifications for this SPI can be found in the spec/spi folder of the repository:
 
-Validate open api specs using below command
-```shell
-sh gradlew validateSpec  --warning-mode all --stacktrace
-```
+- [Tax SPI](./spec/spi/openapi_tax.yml) 
+- [Tax Registration Number Validation SPI](./spec/spi/openapi_trn.yml)
 
-Validate specific open api spec using below command
-```shell
- sh gradlew validateSpec_tax  --warning-mode all --stacktrace
-```
+## Integrate your App with Chargebee
 
-Generate models of all open api specs using below command
-```shell
-sh gradlew generateSpec  --warning-mode all --stacktrace
-```
-
-Generate models specific open api spec using below command
-```shell
-sh gradlew generateSpec_tax  --warning-mode all --stacktrace
-```
-
-When models are generated successfully, generate jar using below command
-```shell
-sh gradlew clean build
-```
-If no build issue, and if jar is successfully created, go to **./build/libs/cb-provider-spi.jar**
-
+After building your app you can integrate it with Chargebee by following the App Onboarding process from [here](https://spidocs.chargebee.com/app-onboarding/guide).
 
 ## Getting Started
 
-Please follow the installation instruction of generated readme to generate the jar of this project. Currently, this jar is used as a dependency in chargebee-app too to use APIs as well as models.
+### Requirement
 
-Add dependency
+- Java 17
+  
+If you are building your application with java, you can use any active library version as dependency in your Maven or Gradle project.
+
+### Maven
+
 ```maven
 <dependency>
-    <groupId>org.chargebee.spi</groupId>
-    <artifactId>cb-provider-spi</artifactId>
+    <groupId>com.chargebee</groupId>
+    <artifactId>cb-partner-spi</artifactId>
     <version>${version}</version>
 </dependency>
+```
+
+### Gradle
+
+```gradle
+implementation 'com.chargebee:cb-partner-spi:${version}'
 ```
 
 Following sample Java code demonstrates how to use the APIs and models from this project:
@@ -112,10 +87,10 @@ public class Example {
 
 ```
 
-
 ## JSON Schema validation
-Tax provider capabilities for new tax providers will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced below.
-- [TaxProviderCapabilities JSONSchema](spec/capabilities/tax-provider.schema.json)
+The capabilities of the built apps will be validated against a constantly updating JSON Schema, to validate the correctness and completeness of configurations. JSON Schema can be referenced [here](spec/capabilities/tax-provider.schema.json).
+
+
 
 
 ## Generating Client libraries in java using openapi spec file
@@ -227,13 +202,22 @@ Example:
 ```
 
 ## Steps to follow release
+=======
+Run the below script to perform json schema validation:
+```shell
+  sh json_schema_validation.sh <path to json file>
+```
+Example:
+```shell
+  sh json_schema_validation.sh spec/capabilities/tax-provider.file.json
+```
 
 
-1. Assume release is 0.0.9. (find release from git page release section)
-2. create a new branch called release/<release> so this would be release/0.0.9
-3. create new branch for ticket feat/<ticket-number>
-4. commit to  feat/<ticket-number>
-5. Raise PR from feat/<ticket-number> to release/0.0.9
-6. After PR is approved and merged
-7. Raise PR from release/0.0.9 to dev. Once PR is merged it will auto release the 0.0.9 version of SPI for dev code base
-8. After that raise PR from release/0.0.9 to main. Once PR is merged it will auto release the 0.0.9 version of SPI for prod codebase
+## Chargebee Developer Docs
+
+- [Local Setup](docs/local-setup.md)
+- [Add or Update a SPI](docs/add-update-spi.md)
+- [Update Mintlify Files](docs/mintlify-files.md)
+- [Postman Collection](docs/postman-collection.md)
+- [Release](docs/release.md)
+- [Guidelines](docs/guidelines.md)
